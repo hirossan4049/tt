@@ -15,7 +15,17 @@ export function getImg(url: string): HTMLImageElement | null {
     im.crossOrigin = 'anonymous';
     im.decoding = 'async';
     const ref = im;
-    im.onload = () => listeners.forEach((f) => f());
+    im.onload = () => {
+      // Verify the image can be used in a canvas without tainting (CORS).
+      try {
+        const test = document.createElement('canvas');
+        test.width = 1; test.height = 1;
+        test.getContext('2d')!.drawImage(ref, 0, 0);
+      } catch {
+        ref.failed = true;
+      }
+      listeners.forEach((f) => f());
+    };
     im.onerror = () => { ref.failed = true; };
     im.src = url;
     cache.set(url, im);

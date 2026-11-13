@@ -7,9 +7,8 @@ export const HATCH = 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 
 export const bgUrl = (ph: Photo | null | undefined, hi = false) => (ph ? `url("${hi ? ph.hi : ph.ui}")` : 'none');
 
 export function usePhotoOf() {
-  const wiki = usePhotos((s) => s.wiki);
   const user = usePhotos((s) => s.user);
-  return useCallback((name: string) => photoOf(name, { wiki, user }), [wiki, user]);
+  return useCallback((name: string) => photoOf(name, { user }), [user]);
 }
 
 export const cx = (...c: (string | false | null | undefined)[]) => c.filter(Boolean).join(' ');

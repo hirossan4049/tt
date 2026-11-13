@@ -96,7 +96,8 @@ function foot(ctx: Ctx, D: Dims, T: Theme, pl: string, credits: string[]) {
   ctx.textAlign = 'right'; ctx.fillStyle = T.fg; ctx.fillText(`${pl ? pl + '   ' : ''}MADE WITH ${SITE}`, W - P, y); ctx.textAlign = 'left';
   if (credits.length) {
     mono(ctx, 15, 400); ctx.fillStyle = T.sub;
-    const L = wrapW(ctx, 'Photos: ' + credits.join(' · ') + ' — via Wikimedia Commons', W - 2 * P).slice(0, 3);
+    const suffix = credits.includes('Tomorrowland') ? '' : ' — via Wikimedia Commons';
+    const L = wrapW(ctx, 'Photos: ' + credits.join(' · ') + suffix, W - 2 * P).slice(0, 3);
     L.forEach((l, i) => ctx.fillText(l, P, y + 34 + i * 21));
   }
 }
@@ -146,7 +147,7 @@ export function drawPage(ctx: Ctx, ex: ExportOpts, page: Item[], pi: number, pn:
   const useImg = (it: Item) => {
     if (!ex.photo) return null;
     const im = it.ph ? img(it.ph.hi) : null;
-    const c = it.ph && it.ph.license ? `${it.ph.credit} (${it.ph.license})` : '';
+    const c = it.ph && !it.ph.own && it.ph.credit ? it.ph.credit : '';
     if (im && c && !credits.includes(c)) credits.push(c);
     return im;
   };

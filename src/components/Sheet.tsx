@@ -101,7 +101,7 @@ export function Sheet({ id }: { id: string }) {
             </button>
           ))}
           <div className="flex items-center justify-between gap-2.5 font-mono text-[10px] leading-[1.4] text-bone/45">
-            <span className="min-w-0 truncate">{ph ? (ph.own ? 'Photo: 自分の画像' : `Photo: ${ph.credit} · ${ph.license} · Wikimedia Commons`) : 'Photo: —'}</span>
+            <span className="min-w-0 truncate">{ph ? (ph.own ? 'Photo: 自分の画像' : 'Photo: Tomorrowland') : 'Photo: —'}</span>
             <label className="relative flex-none cursor-pointer border-b border-bone/40 py-1 font-body text-[11px] font-medium text-bone">
               写真を変更
               <input

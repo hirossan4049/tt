@@ -1,7 +1,7 @@
 'use client';
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
-import { SEED, type DayId, type Status } from './data';
+import { IMG, SEED, type DayId, type Status } from './data';
 import type { Sel } from './plan';
 
 export type View = 'tt' | 'my' | 'ex';
@@ -78,29 +78,27 @@ export const usePlanner = create<PlannerState>()(
   ),
 );
 
-/** Artist photos: Wikimedia cache (null = confirmed no usable photo) + user-supplied overrides. */
+/** Artist photos: official lineup API images + user-supplied overrides. */
 interface PhotoState {
-  wiki: Record<string, Photo | null>;
   user: Record<string, string>;
-  setWiki: (w: Record<string, Photo | null>) => void;
   setUser: (name: string, url: string) => void;
 }
 export const usePhotos = create<PhotoState>()(
   persist(
     (set) => ({
-      wiki: {},
       user: {},
-      setWiki: (wiki) => set({ wiki }),
       setUser: (name, url) => set((s) => ({ user: { ...s.user, [name]: url } })),
     }),
-    { name: 'tt.photos.v1', skipHydration: true, storage: createJSONStorage(() => localStorage), partialize: (s) => ({ wiki: s.wiki, user: s.user }) },
+    { name: 'tt.photos.v2', skipHydration: true, storage: createJSONStorage(() => localStorage), partialize: (s) => ({ user: s.user }) },
   ),
 );
 
-export function photoOf(name: string, st: Pick<PhotoState, 'wiki' | 'user'>): Photo | null {
+export function photoOf(name: string, st: Pick<PhotoState, 'user'>): Photo | null {
   const u = st.user[name];
   if (u) return { ui: u, hi: u, credit: '', license: '', own: true };
-  return st.wiki[name] || null;
+  const url = IMG[name];
+  if (url) return { ui: url, hi: url, credit: 'Tomorrowland', license: '', own: false };
+  return null;
 }
 
 let toastT: ReturnType<typeof setTimeout> | undefined;

@@ -2,7 +2,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { BY, DAYS, DY, GLY, PERFS, fm } from '@/lib/data';
 import { decodeShare } from '@/lib/plan';
-import { loadPhotos } from '@/lib/photos';
 import { flash, usePhotos, usePlanner, type View } from '@/lib/store';
 import { FG, SUB, bgUrl, cx, usePhotoOf } from './ui';
 import { Grid } from './Grid';
@@ -25,7 +24,6 @@ export function Planner() {
         flash('共有プランを読み込みました');
       }
       setReady(true);
-      loadPhotos(usePhotos.getState().wiki).then((r) => r && usePhotos.getState().setWiki(r));
     });
   }, []);
 

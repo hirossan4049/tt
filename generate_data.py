@@ -68,71 +68,14 @@ for (day, stage), items in groups.items():
 
 perfs.sort(key=lambda x: (x['day'], x['stage'], x['start']))
 
-wiki = {
-    'Martin Garrix': 'Martin_Garrix',
-    'Alan Walker': 'Alan_Walker_(music_producer)',
-    'Vini Vici': 'Vini_Vici',
-    'Afrojack': 'Afrojack',
-    'Dimitri Vegas & Like Mike': 'Dimitri_Vegas_&_Like_Mike',
-    'Steve Aoki': 'Steve_Aoki',
-    'R3hab': 'R3HAB',
-    'Lost Frequencies': 'Lost_Frequencies',
-    'Swedish House Mafia': 'Swedish_House_Mafia',
-    'Alok': 'Alok_(record_producer)',
-    'Kölsch': 'Kölsch_(musician)',
-    'MATTN': 'Mattn',
-    'Sub Zero Project': 'Sub_Zero_Project',
-    'Artbat': 'Artbat',
-    'Nervo': 'Nervo_(duo)',
-    'Miss Monique': 'Miss_Monique',
-    'Ferry Corsten': 'Ferry_Corsten',
-    'Ferry Corsten b2b Marsh': 'Ferry_Corsten',
-    'Infected Mushroom': 'Infected_Mushroom',
-    'DVBBS': 'DVBBS',
-    'Yellow Claw': 'Yellow_Claw',
-    'Flosstradamus b2b Yellow Claw': 'Yellow_Claw',
-    'Netsky': 'Netsky_(musician)',
-    'Brennan Heart': 'Brennan_Heart',
-    'Quintino': 'Quintino_(DJ)',
-    'Laidback Luke': 'Laidback_Luke',
-    'Lucas & Steve': 'Lucas_&_Steve',
-    'Matisse & Sadko': 'Matisse_&_Sadko',
-    'Agents Of Time': 'Agents_of_Time',
-    'Kevin de Vries': 'Kevin_de_Vries',
-    'Kevin de Vries b2b MORTEN': 'Kevin_de_Vries',
-    'MORTEN': 'Morten_Breum',
-    'Joris Voorn': 'Joris_Voorn',
-    'Joris Voorn b2b Krystal Klear': 'Joris_Voorn',
-    'DJ Tennis': 'DJ_Tennis',
-    'Solomun': 'Solomun',
-    'Camelphat': 'CamelPhat',
-    'Cosmic Gate': 'Cosmic_Gate',
-    'Aly & Fila': 'Aly_&_Fila',
-    'Marsh': 'Marsh_(DJ)',
-    'Yotto': 'Yotto',
-    'Eli & Fur b2b Yotto': 'Eli_&_Fur',
-    'Eli & Fur': 'Eli_&_Fur',
-    'Bassjackers': 'Bassjackers',
-    'Da Tweekaz': 'Da_Tweekaz',
-    'MANDY': 'Mandy_(singer)',
-    'Kryder': 'Kryder',
-    'John Newman': 'John_Newman_(singer)',
-    'DJ Boring': 'DJ_Boring',
-    'DJ Boring b2b Luuk van Dijk': 'DJ_Boring',
-    'Luuk van Dijk': 'Luuk_van_Dijk',
-    'Blastoyz b2b WHITENO1SE': 'Blastoyz',
-    'Amber Broos b2b Space 92': 'Amber_Broos',
-    'Space 92': 'Space_92',
-    'Amber Broos': 'Amber_Broos',
-    'Hannah Laing': 'Hannah_Laing',
-    'Nico Moreno': 'Nico_Moreno',
-    'Mind Against': 'Mind_Against',
-    'AMÉMÉ b2b Honeyluv': 'Amémé',
-    'AMÉMÉ': 'Amémé',
-    'Henri Bergmann': 'Henri_Bergmann',
-}
-
-wiki_sorted = dict(sorted(wiki.items()))
+# Build performance name -> first available artist image URL mapping.
+img_map = {}
+for p in data['performances']:
+    for a in p.get('artists', []):
+        if a.get('image'):
+            img_map[p['name']] = a['image']
+            break
+img_sorted = dict(sorted(img_map.items()))
 
 
 def esc(s):
@@ -165,10 +108,10 @@ lines.append("  { id: 'd2', dow: 'SAT', full: 'SATURDAY', cap: 'Saturday', d: '1
 lines.append("  { id: 'd3', dow: 'SUN', full: 'SUNDAY', cap: 'Sunday', d: '13', date: '13.12.2026' },")
 lines.append('];')
 lines.append('')
-lines.append('/** Wikipedia article titles used to look up CC/PD artist photos on Wikimedia Commons. */')
-lines.append('export const WIKI: Record<string, string> = {')
-for name, title in wiki_sorted.items():
-    lines.append("  '{}': '{}',".format(esc(name), title))
+lines.append('/** Official artist photos from the Tomorrowland lineup API. */')
+lines.append('export const IMG: Record<string, string> = {')
+for name, url in img_sorted.items():
+    lines.append("  '{}': '{}',".format(esc(name), url))
 lines.append('};')
 lines.append('')
 lines.append('/** Grid start (13:00) in minutes, px per minute in the timetable grid, px per minute in My Plan. */')
