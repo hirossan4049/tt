@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ink: #0c0c0b;
+  --color-ink-2: #121211;
+  --color-ink-3: #161615;
+  --color-ink-4: #171716;
+  --color-bone: #f0efea;
+  --color-sub: rgba(240, 239, 234, 0.56);
+  --color-sig: #ff4a2e;
+  --font-disp: "Big Shoulders Display", sans-serif;
+  --font-body: "Archivo", "Noto Sans JP", sans-serif;
+  --font-mono: "IBM Plex Mono", "Noto Sans JP", monospace;
+  --animate-sheet-in: sheet-in 0.34s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-dock-in: dock-in 0.22s cubic-bezier(0.2, 0.8, 0.2, 1);
+  --animate-fade-in: fade-in 0.15s;
+  @keyframes sheet-in { from { transform: translateY(100%); } to { transform: none; } }
+  @keyframes dock-in { from { transform: translateY(16px); opacity: 0; } to { transform: none; opacity: 1; } }
+  @keyframes fade-in { from { opacity: 0; } to { opacity: 1; } }
+}
+
+@layer base {
+  html, body { margin: 0; height: 100%; background: var(--color-ink); color: var(--color-bone); -webkit-font-smoothing: antialiased; }
+  body { font-family: var(--font-body); overscroll-behavior: none; }
+  a { color: var(--color-bone); }
+  a:hover { color: var(--color-sig); }
+  button { font: inherit; color: inherit; cursor: pointer; }
+  button:focus-visible, select:focus-visible, input:focus-visible, label:focus-within { outline: 2px solid var(--color-bone); outline-offset: 2px; }
+  *::-webkit-scrollbar { width: 0; height: 0; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+}
