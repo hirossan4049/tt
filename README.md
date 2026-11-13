@@ -21,7 +21,7 @@ Instagram Story / 壁紙の画像、または Story 用の動画として書き�
 - 選択状態は LocalStorage に自動保存。
 - アーティスト写真は Wikipedia 記事のリード画像のうち、Wikimedia Commons 上で CC / パブリックドメインのものだけを実行時に取得し、クレジットを表示。無い場合はタイポグラフィのフォールバック。「写真を変更」で自分の画像に差し替え可能。
 
-> 時刻・日付・ステージは仮データです（`src/lib/data.ts`）。
+> 時刻・日付・ステージは Tomorrowland Thailand 2026 Week 1 の公式ラインナップデータを反映しています（`src/lib/data.ts`）。
 
 ## 技術構成
 

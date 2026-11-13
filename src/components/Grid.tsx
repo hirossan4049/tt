@@ -5,9 +5,9 @@ import { conflicts, type Sel } from '@/lib/plan';
 import { usePlanner, type Photo } from '@/lib/store';
 import { FG, HATCH, INK, RED, bgUrl, usePhotoOf } from './ui';
 
-const COLS = 'grid-cols-[38px_repeat(5,minmax(112px,1fr))]';
 const HOUR_LINES = `repeating-linear-gradient(to bottom, rgba(240,239,234,.08) 0 1px, transparent 1px ${30 * PX}px, rgba(240,239,234,.03) ${30 * PX}px ${30 * PX + 1}px, transparent ${30 * PX + 1}px ${60 * PX}px)`;
-const HOURS = Array.from({ length: 11 }, (_, i) => 16 + i);
+const HOURS = Array.from({ length: 13 }, (_, i) => 13 + i);
+const COLS_STYLE: React.CSSProperties = { gridTemplateColumns: `38px repeat(${STAGES.length}, minmax(112px, 1fr))` };
 
 export function Grid() {
   const day = usePlanner((s) => s.day);
@@ -33,7 +33,7 @@ export function Grid() {
       const g = gridRef.current;
       if (g && p) {
         const ci = STAGES.findIndex((s) => s.id === p.stage);
-        const colW = (g.scrollWidth - 38) / 5;
+        const colW = (g.scrollWidth - 38) / STAGES.length;
         g.scrollTo({ top: Math.max(0, (p.start - S0) * PX - 30), left: Math.max(0, 38 + ci * colW - 60), behavior: 'smooth' });
       }
       set({ jump: null });
@@ -47,13 +47,13 @@ export function Grid() {
     <div className="relative flex min-w-0 flex-1 flex-col">
       <div ref={gridRef} className="relative min-h-0 flex-1 overflow-auto overscroll-contain">
         <div className="relative min-w-[600px]">
-          <div className={`sticky top-0 z-[3] grid ${COLS} border-b border-bone/10 bg-ink`}>
+          <div className="sticky top-0 z-[3] grid border-b border-bone/10 bg-ink" style={COLS_STYLE}>
             <div className="sticky left-0 z-[4] bg-ink" />
             {STAGES.map((s) => (
               <div key={s.id} className="px-1.5 pt-[9px] pb-[7px] font-mono text-[10px] leading-none font-semibold tracking-[.1em] whitespace-nowrap">{s.name}</div>
             ))}
           </div>
-          <div className={`grid ${COLS} pt-2.5 pb-[120px]`}>
+          <div className="grid pt-2.5 pb-[120px]" style={COLS_STYLE}>
             <div className="sticky left-0 z-[2] bg-ink" style={{ height: GRID_H }}>
               {HOURS.map((h) => (
                 <div key={h} className="absolute left-0 w-8 -translate-y-1.5 text-right font-mono text-[10px] font-medium text-sub" style={{ top: (h * 60 - S0) * PX }}>

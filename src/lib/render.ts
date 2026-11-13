@@ -225,13 +225,13 @@ export function drawPage(ctx: Ctx, ex: ExportOpts, page: Item[], pi: number, pn:
       if (riso) { ctx.textAlign = 'center'; ctx.fillText(title, 540, ty + s * 0.8); ctx.textAlign = 'left'; } else ctx.fillText(title, P - 4, ty + s * 0.8);
     });
     y += s * 0.8 + 30;
-    const gx = P + 56, cw = (W - P - gx) / 5; const hy = y;
+    const gx = P + 56, cw = (W - P - gx) / STAGES.length; const hy = y;
     enter(2, () => {
       mono(ctx, 18, 600); STAGES.forEach((st, i) => { ctx.fillStyle = T.fg; ctx.fillText(st.short, gx + i * cw + 6, hy + 18); });
       ctx.fillStyle = T.fg; ctx.fillRect(P, hy + 34, W - 2 * P, 3);
     }, 0);
     y += 48;
-    const bottom = D.H - D.bot; let a = 16 * 60, b = 26 * 60;
+    const bottom = D.H - D.bot; let a = 13 * 60, b = 25 * 60;
     if (page.length) { a = Math.floor(Math.min(...page.map((i) => i.s)) / 60) * 60; b = Math.ceil(Math.max(...page.map((i) => i.e)) / 60) * 60; }
     const sc = (bottom - y) / (b - a); const gy = y;
     enter(2, () => {

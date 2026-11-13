@@ -1,7 +1,7 @@
-// Lineup + schedule data. Set times, dates and stage names are placeholder data
-// carried over from the design handoff (Timetable Planner v3).
+// Tomorrowland Thailand 2026 — Week 1 lineup data.
+// Generated from official artist-lineup JSON.
 
-export type StageId = 'main' | 'freedom' | 'core' | 'atmos' | 'elixir';
+export type StageId = 'main' | 'freedom' | 'core' | 'papillon' | 'codex' | 'moose' | 'crystal';
 export type DayId = 'd1' | 'd2' | 'd3';
 export type Status = 'must' | 'maybe' | 'none';
 
@@ -14,10 +14,12 @@ export const SITE = 'tt.h1rose.com';
 
 export const STAGES: Stage[] = [
   { id: 'main', name: 'MAINSTAGE', short: 'MAIN' },
-  { id: 'freedom', name: 'FREEDOM', short: 'FREEDOM' },
+  { id: 'freedom', name: 'FREEDOM BY BUDWEISER', short: 'FREEDOM' },
   { id: 'core', name: 'CORE', short: 'CORE' },
-  { id: 'atmos', name: 'ATMOSPHERE', short: 'ATMOS' },
-  { id: 'elixir', name: 'ELIXIR', short: 'ELIXIR' },
+  { id: 'papillon', name: 'PAPILLON', short: 'PAPILLON' },
+  { id: 'codex', name: 'CODEX', short: 'CODEX' },
+  { id: 'moose', name: 'MOOSE BAR', short: 'MOOSE' },
+  { id: 'crystal', name: 'CRYSTAL GARDEN BY ANKER', short: 'CRYSTAL' },
 ];
 
 export const DAYS: Day[] = [
@@ -26,51 +28,242 @@ export const DAYS: Day[] = [
   { id: 'd3', dow: 'SUN', full: 'SUNDAY', cap: 'Sunday', d: '13', date: '13.12.2026' },
 ];
 
-type Slot = [number, number, string];
-const D1: Record<StageId, Slot[]> = {
-  main: [[1600, 1715, 'KSHMR'], [1715, 1830, 'Steve Aoki'], [1830, 1950, 'Afrojack'], [1950, 2120, 'Armin van Buuren'], [2120, 2250, 'Dimitri Vegas & Like Mike'], [2250, 2350, 'Alan Walker'], [2350, 2450, 'Martin Garrix'], [2450, 2600, 'Hardwell']],
-  freedom: [[1600, 1730, 'Mattn'], [1730, 1900, 'NERVO'], [1900, 2030, 'Boris Brejcha'], [2030, 2145, 'Charlotte de Witte'], [2145, 2245, 'Vini Vici'], [2245, 2400, 'Amelie Lens'], [2400, 2600, 'Adam Beyer']],
-  core: [[1600, 1800, 'Mochakk'], [1800, 2000, 'Kölsch'], [2000, 2200, 'Tale Of Us'], [2200, 2400, 'Anyma'], [2400, 2600, 'Solomun']],
-  atmos: [[1700, 1830, 'Joris Voorn'], [1830, 2000, 'Paul Kalkbrenner'], [2000, 2130, 'Reinier Zonneveld'], [2130, 2300, 'I Hate Models'], [2300, 2430, 'Sara Landry'], [2430, 2600, 'Indira Paganotto']],
-  elixir: [[1600, 1730, 'Yotto'], [1730, 1900, 'Ben Böhmer'], [1900, 2030, 'Lane 8'], [2030, 2200, 'Massano'], [2200, 2330, 'Argy'], [2330, 2500, 'Agents Of Time']],
-};
-
 /** Wikipedia article titles used to look up CC/PD artist photos on Wikimedia Commons. */
 export const WIKI: Record<string, string> = {
-  'Martin Garrix': 'Martin_Garrix', 'Alan Walker': 'Alan_Walker_(music_producer)', 'Vini Vici': 'Vini_Vici', 'Armin van Buuren': 'Armin_van_Buuren',
-  Hardwell: 'Hardwell', Afrojack: 'Afrojack', 'Steve Aoki': 'Steve_Aoki', KSHMR: 'KSHMR', 'Dimitri Vegas & Like Mike': 'Dimitri_Vegas_&_Like_Mike',
-  NERVO: 'Nervo_(duo)', 'Boris Brejcha': 'Boris_Brejcha', 'Charlotte de Witte': 'Charlotte_de_Witte', 'Amelie Lens': 'Amelie_Lens', 'Adam Beyer': 'Adam_Beyer',
-  'Kölsch': 'Kölsch_(musician)', 'Tale Of Us': 'Tale_of_Us', Anyma: 'Anyma_(musician)', Solomun: 'Solomun', 'Joris Voorn': 'Joris_Voorn',
-  'Paul Kalkbrenner': 'Paul_Kalkbrenner', 'Reinier Zonneveld': 'Reinier_Zonneveld', 'Ben Böhmer': 'Ben_Böhmer', 'Lane 8': 'Lane_8',
-  'Indira Paganotto': 'Indira_Paganotto', 'Sara Landry': 'Sara_Landry',
+  'AMÉMÉ': 'Amémé',
+  'AMÉMÉ b2b Honeyluv': 'Amémé',
+  'Afrojack': 'Afrojack',
+  'Agents Of Time': 'Agents_of_Time',
+  'Alan Walker': 'Alan_Walker_(music_producer)',
+  'Alok': 'Alok_(record_producer)',
+  'Aly & Fila': 'Aly_&_Fila',
+  'Amber Broos': 'Amber_Broos',
+  'Amber Broos b2b Space 92': 'Amber_Broos',
+  'Artbat': 'Artbat',
+  'Bassjackers': 'Bassjackers',
+  'Blastoyz b2b WHITENO1SE': 'Blastoyz',
+  'Brennan Heart': 'Brennan_Heart',
+  'Camelphat': 'CamelPhat',
+  'Cosmic Gate': 'Cosmic_Gate',
+  'DJ Boring': 'DJ_Boring',
+  'DJ Boring b2b Luuk van Dijk': 'DJ_Boring',
+  'DJ Tennis': 'DJ_Tennis',
+  'DVBBS': 'DVBBS',
+  'Da Tweekaz': 'Da_Tweekaz',
+  'Dimitri Vegas & Like Mike': 'Dimitri_Vegas_&_Like_Mike',
+  'Eli & Fur': 'Eli_&_Fur',
+  'Eli & Fur b2b Yotto': 'Eli_&_Fur',
+  'Ferry Corsten': 'Ferry_Corsten',
+  'Ferry Corsten b2b Marsh': 'Ferry_Corsten',
+  'Flosstradamus b2b Yellow Claw': 'Yellow_Claw',
+  'Hannah Laing': 'Hannah_Laing',
+  'Henri Bergmann': 'Henri_Bergmann',
+  'Infected Mushroom': 'Infected_Mushroom',
+  'John Newman': 'John_Newman_(singer)',
+  'Joris Voorn': 'Joris_Voorn',
+  'Joris Voorn b2b Krystal Klear': 'Joris_Voorn',
+  'Kevin de Vries': 'Kevin_de_Vries',
+  'Kevin de Vries b2b MORTEN': 'Kevin_de_Vries',
+  'Kryder': 'Kryder',
+  'Kölsch': 'Kölsch_(musician)',
+  'Laidback Luke': 'Laidback_Luke',
+  'Lost Frequencies': 'Lost_Frequencies',
+  'Lucas & Steve': 'Lucas_&_Steve',
+  'Luuk van Dijk': 'Luuk_van_Dijk',
+  'MANDY': 'Mandy_(singer)',
+  'MATTN': 'Mattn',
+  'MORTEN': 'Morten_Breum',
+  'Marsh': 'Marsh_(DJ)',
+  'Martin Garrix': 'Martin_Garrix',
+  'Matisse & Sadko': 'Matisse_&_Sadko',
+  'Mind Against': 'Mind_Against',
+  'Miss Monique': 'Miss_Monique',
+  'Nervo': 'Nervo_(duo)',
+  'Netsky': 'Netsky_(musician)',
+  'Nico Moreno': 'Nico_Moreno',
+  'Quintino': 'Quintino_(DJ)',
+  'R3hab': 'R3HAB',
+  'Solomun': 'Solomun',
+  'Space 92': 'Space_92',
+  'Steve Aoki': 'Steve_Aoki',
+  'Sub Zero Project': 'Sub_Zero_Project',
+  'Swedish House Mafia': 'Swedish_House_Mafia',
+  'Vini Vici': 'Vini_Vici',
+  'Yellow Claw': 'Yellow_Claw',
+  'Yotto': 'Yotto',
 };
 
-/** Grid start (16:00) in minutes, px per minute in the timetable grid, px per minute in My Plan. */
-export const S0 = 960;
+/** Grid start (13:00) in minutes, px per minute in the timetable grid, px per minute in My Plan. */
+export const S0 = 780;
 export const PX = 1.4;
 export const K = 1.15;
-export const GRID_H = 600 * PX;
+export const GRID_H = 720 * PX;
 
 export const tm = (t: number) => Math.floor(t / 100) * 60 + (t % 100);
 export const fm = (m: number) => String(Math.floor(m / 60) % 24).padStart(2, '0') + ':' + String(m % 60).padStart(2, '0');
 export const dur = (m: number) => (m >= 60 ? `${Math.floor(m / 60)}:${String(m % 60).padStart(2, '0')}` : `${m}分`);
 
-export const PERFS: Perf[] = (() => {
-  const pool: string[] = [];
-  STAGES.forEach((s) => D1[s.id].forEach((x) => pool.push(x[2])));
-  const out: Perf[] = [];
-  DAYS.forEach((d, di) => {
-    let k = 0;
-    STAGES.forEach((s) =>
-      D1[s.id].forEach((x, i) => {
-        const name = di === 0 ? x[2] : pool[(k + di * 11) % pool.length];
-        k++;
-        out.push({ id: `${d.id}-${s.id}-${i}`, day: d.id, stage: s.id, start: tm(x[0]), end: tm(x[1]), name });
-      }),
-    );
-  });
-  return out;
-})();
+export const PERFS: Perf[] = [
+  { id: 'd1-codex-0', day: 'd1', stage: 'codex', start: 780, end: 900, name: 'DaDoo' },
+  { id: 'd1-codex-1', day: 'd1', stage: 'codex', start: 900, end: 990, name: 'DJ Licious' },
+  { id: 'd1-codex-2', day: 'd1', stage: 'codex', start: 990, end: 1080, name: 'Camila Jun' },
+  { id: 'd1-codex-3', day: 'd1', stage: 'codex', start: 1080, end: 1170, name: 'Elfigo' },
+  { id: 'd1-codex-4', day: 'd1', stage: 'codex', start: 1170, end: 1260, name: 'Linska' },
+  { id: 'd1-codex-5', day: 'd1', stage: 'codex', start: 1260, end: 1350, name: 'Solardo' },
+  { id: 'd1-codex-6', day: 'd1', stage: 'codex', start: 1350, end: 1440, name: 'Camelphat' },
+  { id: 'd1-core-0', day: 'd1', stage: 'core', start: 780, end: 870, name: 'CLAUDINE' },
+  { id: 'd1-core-1', day: 'd1', stage: 'core', start: 870, end: 960, name: 'Hyalyte' },
+  { id: 'd1-core-2', day: 'd1', stage: 'core', start: 960, end: 1050, name: 'Saint Ludo' },
+  { id: 'd1-core-3', day: 'd1', stage: 'core', start: 1050, end: 1140, name: 'Oppidan' },
+  { id: 'd1-core-4', day: 'd1', stage: 'core', start: 1140, end: 1260, name: 'Pegassi' },
+  { id: 'd1-core-5', day: 'd1', stage: 'core', start: 1260, end: 1380, name: 'X CLUB.' },
+  { id: 'd1-core-6', day: 'd1', stage: 'core', start: 1380, end: 1500, name: 'Funk Tribu' },
+  { id: 'd1-crystal-0', day: 'd1', stage: 'crystal', start: 780, end: 900, name: 'Jonnie B' },
+  { id: 'd1-crystal-1', day: 'd1', stage: 'crystal', start: 900, end: 990, name: 'Lonskii' },
+  { id: 'd1-crystal-2', day: 'd1', stage: 'crystal', start: 990, end: 1080, name: 'Amy Wiles' },
+  { id: 'd1-crystal-3', day: 'd1', stage: 'crystal', start: 1080, end: 1170, name: 'Marsh' },
+  { id: 'd1-crystal-4', day: 'd1', stage: 'crystal', start: 1170, end: 1260, name: 'Eli & Fur b2b Yotto' },
+  { id: 'd1-crystal-5', day: 'd1', stage: 'crystal', start: 1260, end: 1320, name: 'Cosmic Gate' },
+  { id: 'd1-crystal-6', day: 'd1', stage: 'crystal', start: 1320, end: 1410, name: 'Aly & Fila' },
+  { id: 'd1-crystal-7', day: 'd1', stage: 'crystal', start: 1410, end: 1440, name: 'Ferry Corsten b2b Marsh' },
+  { id: 'd1-freedom-0', day: 'd1', stage: 'freedom', start: 780, end: 870, name: 'Mike Bond' },
+  { id: 'd1-freedom-1', day: 'd1', stage: 'freedom', start: 870, end: 960, name: 'Sm1le' },
+  { id: 'd1-freedom-2', day: 'd1', stage: 'freedom', start: 960, end: 1050, name: 'Kryder' },
+  { id: 'd1-freedom-3', day: 'd1', stage: 'freedom', start: 1050, end: 1140, name: 'Raiden' },
+  { id: 'd1-freedom-4', day: 'd1', stage: 'freedom', start: 1140, end: 1200, name: 'Honey Gee' },
+  { id: 'd1-freedom-5', day: 'd1', stage: 'freedom', start: 1200, end: 1260, name: 'Wukong' },
+  { id: 'd1-freedom-6', day: 'd1', stage: 'freedom', start: 1260, end: 1320, name: 'Bassjackers' },
+  { id: 'd1-freedom-7', day: 'd1', stage: 'freedom', start: 1320, end: 1380, name: 'MANDY' },
+  { id: 'd1-freedom-8', day: 'd1', stage: 'freedom', start: 1380, end: 1440, name: 'Da Tweekaz' },
+  { id: 'd1-main-0', day: 'd1', stage: 'main', start: 780, end: 865, name: 'Goldfish' },
+  { id: 'd1-main-1', day: 'd1', stage: 'main', start: 865, end: 925, name: 'Rave Republic' },
+  { id: 'd1-main-2', day: 'd1', stage: 'main', start: 925, end: 985, name: 'Youna' },
+  { id: 'd1-main-3', day: 'd1', stage: 'main', start: 990, end: 1050, name: 'Henri PFR' },
+  { id: 'd1-main-4', day: 'd1', stage: 'main', start: 1055, end: 1115, name: 'Lilly Palmer' },
+  { id: 'd1-main-5', day: 'd1', stage: 'main', start: 1115, end: 1175, name: 'John Newman' },
+  { id: 'd1-main-6', day: 'd1', stage: 'main', start: 1180, end: 1240, name: 'Kevin de Vries' },
+  { id: 'd1-main-7', day: 'd1', stage: 'main', start: 1240, end: 1300, name: 'HALŌ' },
+  { id: 'd1-main-8', day: 'd1', stage: 'main', start: 1305, end: 1365, name: 'Vini Vici' },
+  { id: 'd1-main-9', day: 'd1', stage: 'main', start: 1370, end: 1430, name: 'Alan Walker' },
+  { id: 'd1-main-10', day: 'd1', stage: 'main', start: 1430, end: 1490, name: 'Martin Garrix' },
+  { id: 'd1-moose-0', day: 'd1', stage: 'moose', start: 780, end: 1020, name: 'Jelle DK' },
+  { id: 'd1-moose-1', day: 'd1', stage: 'moose', start: 1020, end: 1260, name: 'Jan V' },
+  { id: 'd1-moose-2', day: 'd1', stage: 'moose', start: 1260, end: 1500, name: 'Jerrooo' },
+  { id: 'd1-papillon-0', day: 'd1', stage: 'papillon', start: 780, end: 900, name: 'Jijie' },
+  { id: 'd1-papillon-1', day: 'd1', stage: 'papillon', start: 900, end: 1020, name: 'Vicky Kroon' },
+  { id: 'd1-papillon-2', day: 'd1', stage: 'papillon', start: 1020, end: 1140, name: 'Makasi' },
+  { id: 'd1-papillon-3', day: 'd1', stage: 'papillon', start: 1140, end: 1230, name: 'Palmera' },
+  { id: 'd1-papillon-4', day: 'd1', stage: 'papillon', start: 1230, end: 1320, name: 'Lennert Wolfs' },
+  { id: 'd1-papillon-5', day: 'd1', stage: 'papillon', start: 1320, end: 1440, name: 'TA:REK' },
+  { id: 'd2-codex-0', day: 'd2', stage: 'codex', start: 780, end: 870, name: 'PETRA' },
+  { id: 'd2-codex-1', day: 'd2', stage: 'codex', start: 870, end: 960, name: 'Romeo Blanco' },
+  { id: 'd2-codex-2', day: 'd2', stage: 'codex', start: 960, end: 1050, name: 'Manuals' },
+  { id: 'd2-codex-3', day: 'd2', stage: 'codex', start: 1050, end: 1140, name: 'NOME.' },
+  { id: 'd2-codex-4', day: 'd2', stage: 'codex', start: 1140, end: 1200, name: 'DJ Sally' },
+  { id: 'd2-codex-5', day: 'd2', stage: 'codex', start: 1200, end: 1260, name: '22 Bullets' },
+  { id: 'd2-codex-6', day: 'd2', stage: 'codex', start: 1260, end: 1320, name: 'Dubvision' },
+  { id: 'd2-codex-7', day: 'd2', stage: 'codex', start: 1320, end: 1380, name: 'Yves V' },
+  { id: 'd2-codex-8', day: 'd2', stage: 'codex', start: 1380, end: 1440, name: 'Third Party' },
+  { id: 'd2-core-0', day: 'd2', stage: 'core', start: 780, end: 900, name: 'An!ka' },
+  { id: 'd2-core-1', day: 'd2', stage: 'core', start: 900, end: 1020, name: 'Meltmode' },
+  { id: 'd2-core-2', day: 'd2', stage: 'core', start: 1020, end: 1140, name: 'Bibi Seck' },
+  { id: 'd2-core-3', day: 'd2', stage: 'core', start: 1140, end: 1230, name: 'Luuk van Dijk' },
+  { id: 'd2-core-4', day: 'd2', stage: 'core', start: 1230, end: 1290, name: 'DJ Boring b2b Luuk van Dijk' },
+  { id: 'd2-core-5', day: 'd2', stage: 'core', start: 1290, end: 1380, name: 'DJ Boring' },
+  { id: 'd2-core-6', day: 'd2', stage: 'core', start: 1380, end: 1500, name: 'Mind Against' },
+  { id: 'd2-crystal-0', day: 'd2', stage: 'crystal', start: 780, end: 870, name: 'Puffer P' },
+  { id: 'd2-crystal-1', day: 'd2', stage: 'crystal', start: 870, end: 960, name: 'Tripical Note' },
+  { id: 'd2-crystal-2', day: 'd2', stage: 'crystal', start: 960, end: 1050, name: 'Firaga' },
+  { id: 'd2-crystal-3', day: 'd2', stage: 'crystal', start: 1050, end: 1140, name: 'Ghost Rider' },
+  { id: 'd2-crystal-4', day: 'd2', stage: 'crystal', start: 1140, end: 1200, name: 'Somnia' },
+  { id: 'd2-crystal-5', day: 'd2', stage: 'crystal', start: 1200, end: 1260, name: 'Blazy' },
+  { id: 'd2-crystal-6', day: 'd2', stage: 'crystal', start: 1260, end: 1320, name: 'Blastoyz b2b WHITENO1SE' },
+  { id: 'd2-crystal-7', day: 'd2', stage: 'crystal', start: 1320, end: 1380, name: 'Vegas' },
+  { id: 'd2-crystal-8', day: 'd2', stage: 'crystal', start: 1380, end: 1440, name: 'Mad Maxx b2b Stryker' },
+  { id: 'd2-crystal-9', day: 'd2', stage: 'crystal', start: 1440, end: 1500, name: 'Ferry Corsten' },
+  { id: 'd2-freedom-0', day: 'd2', stage: 'freedom', start: 780, end: 870, name: 'Row1' },
+  { id: 'd2-freedom-1', day: 'd2', stage: 'freedom', start: 870, end: 960, name: 'XY' },
+  { id: 'd2-freedom-2', day: 'd2', stage: 'freedom', start: 960, end: 1080, name: 'Meguru' },
+  { id: 'd2-freedom-3', day: 'd2', stage: 'freedom', start: 1080, end: 1170, name: 'Nakadia' },
+  { id: 'd2-freedom-4', day: 'd2', stage: 'freedom', start: 1170, end: 1260, name: 'Amber Broos b2b Space 92' },
+  { id: 'd2-freedom-5', day: 'd2', stage: 'freedom', start: 1260, end: 1350, name: 'Hannah Laing' },
+  { id: 'd2-freedom-6', day: 'd2', stage: 'freedom', start: 1350, end: 1440, name: 'Nico Moreno' },
+  { id: 'd2-freedom-7', day: 'd2', stage: 'freedom', start: 1440, end: 1500, name: 'Flosstradamus b2b Yellow Claw' },
+  { id: 'd2-main-0', day: 'd2', stage: 'main', start: 780, end: 865, name: 'Riviere' },
+  { id: 'd2-main-1', day: 'd2', stage: 'main', start: 865, end: 925, name: 'KARTY' },
+  { id: 'd2-main-2', day: 'd2', stage: 'main', start: 925, end: 985, name: 'Meaghan' },
+  { id: 'd2-main-3', day: 'd2', stage: 'main', start: 990, end: 1050, name: 'Ian Asher' },
+  { id: 'd2-main-4', day: 'd2', stage: 'main', start: 1055, end: 1115, name: 'Miss Monique' },
+  { id: 'd2-main-5', day: 'd2', stage: 'main', start: 1115, end: 1175, name: 'Nervo' },
+  { id: 'd2-main-6', day: 'd2', stage: 'main', start: 1180, end: 1240, name: 'Sub Zero Project' },
+  { id: 'd2-main-7', day: 'd2', stage: 'main', start: 1240, end: 1300, name: 'Artbat' },
+  { id: 'd2-main-8', day: 'd2', stage: 'main', start: 1305, end: 1365, name: 'Afrojack' },
+  { id: 'd2-main-9', day: 'd2', stage: 'main', start: 1370, end: 1430, name: 'Dimitri Vegas & Like Mike' },
+  { id: 'd2-main-10', day: 'd2', stage: 'main', start: 1430, end: 1490, name: 'Steve Aoki' },
+  { id: 'd2-moose-0', day: 'd2', stage: 'moose', start: 780, end: 1020, name: 'Jan V' },
+  { id: 'd2-moose-1', day: 'd2', stage: 'moose', start: 1020, end: 1260, name: 'Jerrooo' },
+  { id: 'd2-moose-2', day: 'd2', stage: 'moose', start: 1260, end: 1500, name: 'Jelle DK' },
+  { id: 'd2-papillon-0', day: 'd2', stage: 'papillon', start: 780, end: 900, name: 'Arten' },
+  { id: 'd2-papillon-1', day: 'd2', stage: 'papillon', start: 900, end: 1020, name: 'Semsei' },
+  { id: 'd2-papillon-2', day: 'd2', stage: 'papillon', start: 1020, end: 1140, name: 'Rebeca Ark' },
+  { id: 'd2-papillon-3', day: 'd2', stage: 'papillon', start: 1140, end: 1260, name: 'DJ Licious' },
+  { id: 'd2-papillon-4', day: 'd2', stage: 'papillon', start: 1260, end: 1350, name: 'Carly Wilford' },
+  { id: 'd2-papillon-5', day: 'd2', stage: 'papillon', start: 1350, end: 1440, name: 'Coco Bevan' },
+  { id: 'd3-codex-0', day: 'd3', stage: 'codex', start: 780, end: 870, name: 'J-Nana' },
+  { id: 'd3-codex-1', day: 'd3', stage: 'codex', start: 870, end: 960, name: 'Maysaa' },
+  { id: 'd3-codex-2', day: 'd3', stage: 'codex', start: 960, end: 1020, name: 'Pixzy' },
+  { id: 'd3-codex-3', day: 'd3', stage: 'codex', start: 1020, end: 1080, name: 'Merow' },
+  { id: 'd3-codex-4', day: 'd3', stage: 'codex', start: 1080, end: 1140, name: 'Rayray' },
+  { id: 'd3-codex-5', day: 'd3', stage: 'codex', start: 1140, end: 1200, name: 'Sabai' },
+  { id: 'd3-codex-6', day: 'd3', stage: 'codex', start: 1200, end: 1260, name: 'Andromedik' },
+  { id: 'd3-codex-7', day: 'd3', stage: 'codex', start: 1260, end: 1320, name: 'APASHE' },
+  { id: 'd3-codex-8', day: 'd3', stage: 'codex', start: 1320, end: 1380, name: 'Netsky' },
+  { id: 'd3-codex-9', day: 'd3', stage: 'codex', start: 1380, end: 1440, name: 'Yellow Claw' },
+  { id: 'd3-codex-10', day: 'd3', stage: 'codex', start: 1440, end: 1500, name: 'DVBBS' },
+  { id: 'd3-core-0', day: 'd3', stage: 'core', start: 780, end: 900, name: 'Dennis Gold' },
+  { id: 'd3-core-1', day: 'd3', stage: 'core', start: 900, end: 990, name: 'Capoon' },
+  { id: 'd3-core-2', day: 'd3', stage: 'core', start: 990, end: 1080, name: 'Dino Lenny' },
+  { id: 'd3-core-3', day: 'd3', stage: 'core', start: 1080, end: 1170, name: 'Maxi Meraki' },
+  { id: 'd3-core-4', day: 'd3', stage: 'core', start: 1170, end: 1260, name: 'AMÉMÉ b2b Honeyluv' },
+  { id: 'd3-core-5', day: 'd3', stage: 'core', start: 1260, end: 1350, name: 'DJ Tennis' },
+  { id: 'd3-core-6', day: 'd3', stage: 'core', start: 1350, end: 1440, name: 'Joris Voorn b2b Krystal Klear' },
+  { id: 'd3-crystal-0', day: 'd3', stage: 'crystal', start: 780, end: 870, name: 'Lora Matia' },
+  { id: 'd3-crystal-1', day: 'd3', stage: 'crystal', start: 870, end: 960, name: 'Angemi' },
+  { id: 'd3-crystal-2', day: 'd3', stage: 'crystal', start: 960, end: 1050, name: 'Tiger Drama' },
+  { id: 'd3-crystal-3', day: 'd3', stage: 'crystal', start: 1050, end: 1110, name: 'Whisnu Santika' },
+  { id: 'd3-crystal-4', day: 'd3', stage: 'crystal', start: 1110, end: 1170, name: 'Matisse & Sadko' },
+  { id: 'd3-crystal-5', day: 'd3', stage: 'crystal', start: 1170, end: 1230, name: 'Lucas & Steve' },
+  { id: 'd3-crystal-6', day: 'd3', stage: 'crystal', start: 1230, end: 1320, name: 'Laidback Luke' },
+  { id: 'd3-crystal-7', day: 'd3', stage: 'crystal', start: 1320, end: 1380, name: 'Quintino' },
+  { id: 'd3-crystal-8', day: 'd3', stage: 'crystal', start: 1380, end: 1440, name: 'Brennan Heart' },
+  { id: 'd3-crystal-9', day: 'd3', stage: 'crystal', start: 1440, end: 1500, name: 'Infected Mushroom' },
+  { id: 'd3-freedom-0', day: 'd3', stage: 'freedom', start: 780, end: 900, name: 'Yukio' },
+  { id: 'd3-freedom-1', day: 'd3', stage: 'freedom', start: 900, end: 990, name: 'Xenia Dia' },
+  { id: 'd3-freedom-2', day: 'd3', stage: 'freedom', start: 990, end: 1080, name: 'Luna & Lenthe' },
+  { id: 'd3-freedom-3', day: 'd3', stage: 'freedom', start: 1080, end: 1170, name: 'Henri Bergmann' },
+  { id: 'd3-freedom-4', day: 'd3', stage: 'freedom', start: 1170, end: 1260, name: 'Agents Of Time' },
+  { id: 'd3-freedom-5', day: 'd3', stage: 'freedom', start: 1260, end: 1350, name: 'Kevin de Vries b2b MORTEN' },
+  { id: 'd3-freedom-6', day: 'd3', stage: 'freedom', start: 1350, end: 1440, name: 'Artbat b2b R3hab' },
+  { id: 'd3-main-0', day: 'd3', stage: 'main', start: 780, end: 865, name: 'Nuttrix' },
+  { id: 'd3-main-1', day: 'd3', stage: 'main', start: 865, end: 925, name: 'Halo' },
+  { id: 'd3-main-2', day: 'd3', stage: 'main', start: 925, end: 985, name: 'Botcash' },
+  { id: 'd3-main-3', day: 'd3', stage: 'main', start: 990, end: 1050, name: 'MATTN' },
+  { id: 'd3-main-4', day: 'd3', stage: 'main', start: 1055, end: 1115, name: 'Kölsch' },
+  { id: 'd3-main-5', day: 'd3', stage: 'main', start: 1115, end: 1175, name: 'Novah' },
+  { id: 'd3-main-6', day: 'd3', stage: 'main', start: 1180, end: 1240, name: 'R3hab' },
+  { id: 'd3-main-7', day: 'd3', stage: 'main', start: 1240, end: 1300, name: 'Alok' },
+  { id: 'd3-main-8', day: 'd3', stage: 'main', start: 1305, end: 1365, name: 'Lost Frequencies' },
+  { id: 'd3-main-9', day: 'd3', stage: 'main', start: 1370, end: 1430, name: 'Swedish House Mafia' },
+  { id: 'd3-moose-0', day: 'd3', stage: 'moose', start: 780, end: 1020, name: 'Jerrooo' },
+  { id: 'd3-moose-1', day: 'd3', stage: 'moose', start: 1020, end: 1260, name: 'Jelle DK' },
+  { id: 'd3-moose-2', day: 'd3', stage: 'moose', start: 1260, end: 1440, name: 'Jan V' },
+  { id: 'd3-papillon-0', day: 'd3', stage: 'papillon', start: 780, end: 900, name: 'JOULIE' },
+  { id: 'd3-papillon-1', day: 'd3', stage: 'papillon', start: 900, end: 1020, name: 'Neon' },
+  { id: 'd3-papillon-2', day: 'd3', stage: 'papillon', start: 1020, end: 1110, name: 'More to be announced' },
+  { id: 'd3-papillon-3', day: 'd3', stage: 'papillon', start: 1110, end: 1200, name: 'Onfaya' },
+  { id: 'd3-papillon-4', day: 'd3', stage: 'papillon', start: 1200, end: 1290, name: 'AdamK' },
+  { id: 'd3-papillon-5', day: 'd3', stage: 'papillon', start: 1290, end: 1380, name: 'JoWaves' },
+];
 
 export const BY: Record<string, Perf> = Object.fromEntries(PERFS.map((p) => [p.id, p]));
 export const ST = Object.fromEntries(STAGES.map((s) => [s.id, s])) as Record<StageId, Stage>;
@@ -80,8 +273,6 @@ export const GLY: Record<Status, string> = { must: '●', maybe: '○', none: ''
 export const NEXT: Record<Status, Status> = { none: 'must', must: 'maybe', maybe: 'none' };
 
 export const SEED: Record<string, Exclude<Status, 'none'>> = {
-  'd1-main-3': 'must', 'd1-freedom-3': 'must', 'd1-freedom-4': 'must', 'd1-main-5': 'must', 'd1-main-6': 'must',
-  'd1-freedom-5': 'maybe', 'd1-core-3': 'maybe', 'd1-elixir-2': 'maybe', 'd2-core-2': 'must', 'd2-main-4': 'maybe',
 };
 
 export interface Device { id: string; label: string; w: number; h: number }
