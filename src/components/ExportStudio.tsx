@@ -30,7 +30,6 @@ export function ExportStudio({ wide }: { wide: boolean }) {
   const pi = Math.min(page, pn - 1);
   const D = dims(eff);
 
-  // Fonts + photos arriving trigger a redraw.
   useEffect(() => {
     Promise.all(FONT_LOADS.map((f) => document.fonts.load(f))).then(() => setTick((t) => t + 1));
     const off = onImageLoad(() => setTick((t) => t + 1));
@@ -39,7 +38,6 @@ export function ExportStudio({ wide }: { wide: boolean }) {
     return () => { off(); removeEventListener('resize', onResize); };
   }, []);
 
-  // Live preview: still page, or the looping story animation.
   useEffect(() => {
     const cv = canvasRef.current;
     if (!cv) return;
@@ -111,7 +109,7 @@ export function ExportStudio({ wide }: { wide: boolean }) {
 
   return (
     <div className="min-h-0 flex-1 overflow-auto">
-      <div className="flex flex-col items-center gap-2.5 bg-[#070707] px-3 pt-[18px] pb-3">
+      <div className="flex flex-col items-center gap-2.5 px-3 pt-[18px] pb-3">
         <canvas ref={canvasRef} aria-label="書き出しプレビュー" className="block shadow-[0_20px_60px_rgba(0,0,0,.8)]" />
         <div className="flex h-[30px] items-center gap-2.5">
           {!video && pn > 1 && <PageBtn label="前のページ" onClick={() => set({ page: (pi - 1 + pn) % pn })}>‹</PageBtn>}
@@ -121,18 +119,18 @@ export function ExportStudio({ wide }: { wide: boolean }) {
       </div>
       <div className="flex flex-col px-3 pt-0.5 pb-[18px]">
         {rows.map((row) => (
-          <div key={row.label} className="grid min-h-[50px] grid-cols-[56px_minmax(0,1fr)] items-center gap-2 border-b border-bone/7">
+          <div key={row.label} className="grid min-h-[48px] grid-cols-[48px_minmax(0,1fr)] items-center gap-2 border-b border-bone/7">
             <div className="font-mono text-[10px] font-medium text-sub">{row.label}</div>
-            <div className="flex gap-px border border-bone/12 bg-bone/12">
+            <div className="flex flex-wrap gap-1.5">
               {row.opts.map((o) => (
                 <button
                   key={o.label}
                   onClick={o.onClick}
                   aria-pressed={o.on}
-                  className="flex h-9 min-w-0 flex-1 items-center justify-center gap-1.5 border-0 text-[12px] font-semibold whitespace-nowrap transition-colors"
-                  style={{ background: o.on ? FG : INK, color: o.on ? INK : FG }}
+                  className="flex h-[30px] min-w-0 items-center gap-1.5 rounded-full border border-bone/15 px-3 text-[12px] font-semibold whitespace-nowrap transition-colors active:scale-[.97]"
+                  style={{ background: o.on ? FG : 'transparent', color: o.on ? INK : '#f0efea' }}
                 >
-                  {o.sw && <span className="size-[11px] flex-none shadow-[inset_0_0_0_1px_rgba(128,128,128,.6)]" style={{ background: o.sw }} />}
+                  {o.sw && <span className="size-[11px] flex-none rounded-full shadow-[inset_0_0_0_1px_rgba(128,128,128,.6)]" style={{ background: o.sw }} />}
                   {o.label}
                 </button>
               ))}
@@ -140,16 +138,16 @@ export function ExportStudio({ wide }: { wide: boolean }) {
           </div>
         ))}
         {!video && ex.format === 'wallpaper' && (
-          <div className="grid min-h-[50px] grid-cols-[56px_minmax(0,1fr)] items-center gap-2 border-b border-bone/7">
+          <div className="grid min-h-[48px] grid-cols-[48px_minmax(0,1fr)] items-center gap-2 border-b border-bone/7">
             <div className="font-mono text-[10px] font-medium text-sub">端末</div>
-            <select value={ex.device} onChange={(e) => setEx('device', e.target.value)} aria-label="壁紙サイズ" className="h-[38px] border border-bone/20 bg-ink px-2 font-mono text-[12px] font-medium text-bone">
+            <select value={ex.device} onChange={(e) => setEx('device', e.target.value)} aria-label="壁紙サイズ" className="h-[34px] w-full max-w-[220px] rounded-full border border-bone/20 bg-ink px-3 font-mono text-[12px] font-medium text-bone">
               {DEVICES.map((dv) => <option key={dv.id} value={dv.id}>{dv.label}</option>)}
             </select>
           </div>
         )}
-        <div className="mt-3.5 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
-          <button onClick={save} className="relative h-[52px] overflow-hidden border-0 bg-bone text-[14px] font-bold text-ink active:scale-[.98]">
-            {busy != null && video && <span className="absolute inset-y-0 left-0 bg-ink/15" style={{ width: `${busy * 100}%` }} />}
+        <div className="mt-4 grid grid-cols-[minmax(0,1fr)_auto] gap-2">
+          <button onClick={save} className="relative h-[50px] overflow-hidden rounded-full border-0 bg-bone text-[14px] font-bold text-ink active:scale-[.98]">
+            {busy != null && video && <span className="absolute inset-y-0 left-0 rounded-full bg-ink/15" style={{ width: `${busy * 100}%` }} />}
             <span className="relative">{saveLabel}</span>
           </button>
           <button
@@ -158,12 +156,12 @@ export function ExportStudio({ wide }: { wide: boolean }) {
               navigator.clipboard?.writeText(url).catch(() => {});
               flash('リンクをコピーしました');
             }}
-            className="h-[52px] border border-bone/25 bg-transparent px-[18px] text-[13px] font-semibold whitespace-nowrap"
+            className="h-[50px] rounded-full border border-bone/25 bg-transparent px-5 text-[13px] font-semibold whitespace-nowrap"
           >
             リンク
           </button>
         </div>
-        <p className="mt-4 font-mono text-[10px] leading-relaxed text-bone/40">Made with {SITE} · 非公式ファンメイド · 時刻は仮データ</p>
+        <p className="mt-3 text-center font-mono text-[10px] leading-relaxed text-bone/35">Made with {SITE}</p>
       </div>
     </div>
   );
@@ -171,7 +169,7 @@ export function ExportStudio({ wide }: { wide: boolean }) {
 
 function PageBtn({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
   return (
-    <button onClick={onClick} aria-label={label} className="size-[30px] border border-bone/25 bg-transparent font-mono text-[13px] font-medium">
+    <button onClick={onClick} aria-label={label} className="size-[30px] rounded-full border border-bone/25 bg-transparent font-mono text-[13px] font-medium">
       {children}
     </button>
   );

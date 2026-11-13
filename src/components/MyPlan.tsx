@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { DY, GLY, K, ST, dur, fm } from '@/lib/data';
 import { buildPlan } from '@/lib/plan';
 import { usePlanner } from '@/lib/store';
-import { FG, HATCH, INK, RED, bgUrl, usePhotoOf } from './ui';
+import { FG, INK, RED, bgUrl, usePhotoOf } from './ui';
 
 export function MyPlan() {
   const sel = usePlanner((s) => s.sel);
@@ -21,7 +21,7 @@ export function MyPlan() {
       )}
       {plan.map((g) => (
         <section key={g.day} className="pt-5">
-          <div className="mb-2.5 flex items-baseline justify-between border-b-2 border-bone pb-2">
+          <div className="mb-2.5 flex items-baseline justify-between border-b border-bone/10 pb-2">
             <div className="font-disp text-[36px] leading-[.9] font-black tracking-[.01em]">{DY[g.day].full}</div>
             <div className="flex gap-3 font-mono text-[11px] font-medium whitespace-nowrap">
               <span>● {g.must}</span>
@@ -61,29 +61,40 @@ export function MyPlan() {
                   {s.items.map(({ p, lane }) => {
                     const v = sel[p.id];
                     const n = s.lanes;
-                    const thumb = n === 1;
                     const must = v === 'must';
+                    const maybe = v === 'maybe';
+                    const ph = phOf(p.name);
+                    const h = Math.max(52, (p.end - p.start) * K - 3);
+                    const hasPh = !!ph && h >= 72 && n <= 2;
                     return (
                       <button
                         key={p.id}
                         onClick={() => set({ sheet: p.id })}
                         aria-label={`${p.name} ${fm(p.start)} ${v}`}
-                        className="absolute box-border flex overflow-hidden p-0 text-left transition-transform active:scale-[.98]"
+                        className="absolute box-border overflow-hidden p-0 text-left transition-transform active:scale-[.98]"
                         style={{
                           top: (p.start - s.start) * K,
-                          height: Math.max(52, (p.end - p.start) * K - 3),
+                          height: h,
                           left: `${(lane / n) * 100}%`,
                           width: `calc(${100 / n}% - 3px)`,
-                          background: must ? FG : HATCH,
-                          color: must ? INK : FG,
-                          border: must ? `2px solid ${FG}` : `1.5px dashed ${FG}`,
+                          border: must ? '1.5px solid rgba(240,239,234,.9)' : maybe ? '1.5px dashed rgba(240,239,234,.45)' : '1px solid rgba(240,239,234,.08)',
                         }}
                       >
-                        {thumb && <span className="w-[72px] flex-none self-stretch bg-[#1c1c1b] bg-cover bg-[center_22%]" style={{ backgroundImage: bgUrl(phOf(p.name)), filter: must ? 'none' : 'grayscale(1) brightness(.75)' }} />}
-                        <span className="flex min-w-0 flex-1 flex-col gap-1 px-[9px] py-[7px]">
-                          <span className="font-disp leading-[.94] font-extrabold tracking-[.01em] uppercase" style={{ fontSize: n === 1 ? 24 : n === 2 ? 17 : 15 }}>{p.name}</span>
-                          <span className="font-mono text-[10px] leading-[1.3] font-medium opacity-70">{GLY[v]} {fm(p.start)}–{fm(p.end)}</span>
-                          {thumb && <span className="font-mono text-[10px] leading-none font-medium tracking-[.08em] opacity-55">{ST[p.stage].name}</span>}
+                        {hasPh && (
+                          <>
+                            <span className="absolute inset-0 bg-cover bg-[center_22%]" style={{ backgroundImage: bgUrl(ph), filter: must ? 'none' : maybe ? 'grayscale(.25) brightness(.85)' : 'grayscale(1) brightness(.55) contrast(1.08)' }} />
+                            <span className="absolute inset-x-0 bottom-0 z-[1] h-[78%] bg-gradient-to-t from-black/84 via-black/45 to-transparent" />
+                          </>
+                        )}
+                        {!hasPh && <span className="absolute inset-0 z-[1]" style={{ background: must ? FG : maybe ? 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 1px, transparent 1px 6px), #121211' : '#171716' }} />}
+                        {must && <span className="absolute top-1.5 right-1.5 z-[3] size-[6px] rounded-full bg-sig" />}
+                        {maybe && <span className="absolute top-1.5 right-1.5 z-[3] size-[6px] rounded-full border border-bone/80" />}
+                        <span className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-[2px] px-2 pb-1.5 pt-3" style={{ color: hasPh ? '#f0efea' : must ? INK : '#f0efea' }}>
+                          <span className="font-disp leading-[.94] font-extrabold tracking-[.01em] uppercase [text-shadow:0_1px_3px_rgba(0,0,0,.85)]" style={{ fontSize: n === 1 ? 22 : n === 2 ? 16 : 14 }}>{p.name}</span>
+                          <span className="font-mono text-[10px] leading-[1.3] font-medium [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
+                            {GLY[v]} {fm(p.start)}–{fm(p.end)}
+                          </span>
+                          {n === 1 && <span className="font-mono text-[10px] leading-none font-medium tracking-[.08em] text-bone/70 [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">{ST[p.stage].name}</span>}
                         </span>
                       </button>
                     );

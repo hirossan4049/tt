@@ -244,18 +244,44 @@ export function drawPage(ctx: Ctx, ex: ExportOpts, page: Item[], pi: number, pn:
     page.forEach((it, i) => {
       const ci = STAGES.findIndex((s0) => s0.id === it.stageId); const bx = gx + ci * cw + 4, bw = cw - 8, by = gy + (it.s - a) * sc + 3, bh = (it.e - it.s) * sc - 6;
       enter(3 + i * 0.5, () => {
-        ctx.save(); ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.clip(); let tc = T.fg;
-        if (it.st === 'must') { ctx.fillStyle = T.mustFill; ctx.fillRect(bx, by, bw, bh); tc = T.mustInk; }
-        else if (it.st === 'maybe') {
-          ctx.fillStyle = T.bg; ctx.fillRect(bx, by, bw, bh); ctx.strokeStyle = T.line; ctx.lineWidth = 2;
-          for (let k = -bh; k < bw; k += 12) { ctx.beginPath(); ctx.moveTo(bx + k, by + bh); ctx.lineTo(bx + k + bh, by); ctx.stroke(); }
-          ctx.setLineDash([12, 8]); ctx.strokeStyle = T.fg; ctx.lineWidth = 5; ctx.strokeRect(bx, by, bw, bh); ctx.setLineDash([]);
-        } else { ctx.strokeStyle = T.line; ctx.lineWidth = 2.5; ctx.strokeRect(bx, by, bw, bh); tc = T.sub; }
-        let tY = by + 8;
-        if (ex.photo && it.st !== 'none' && bh > 200) { const ph = Math.min(bh * 0.48, 170); photo(ctx, T, useImg(it), it.name, bx, by, bw, ph, it.st === 'must' && ex.theme === 'ink' ? 'color' : null); tY = by + ph + 6; }
-        ctx.fillStyle = tc; setF(ctx, T, T.nw, 28); const L = wrapW(ctx, cs(T, it.name), bw - 16); let ly = tY + 26;
-        L.forEach((l) => { if (ly < by + bh - 24) { fitT(ctx, T, l, T.nw, 28, 18, bw - 16); ctx.fillText(l, bx + 8, ly); ly += 27; } });
-        if (ly + 4 < by + bh - 4) { mono(ctx, 17); ctx.fillText(it.start, bx + 8, ly + 4); }
+        ctx.save(); ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.clip();
+        const hasPh = ex.photo && bh >= 60;
+        if (hasPh) {
+          const im = useImg(it);
+          if (im) {
+            ctx.save(); ctx.beginPath(); ctx.rect(bx, by, bw, bh); ctx.clip();
+            cover(ctx, im, bx, by, bw, bh);
+            if (it.st !== 'must') { ctx.globalCompositeOperation = 'saturation'; ctx.fillStyle = '#808080'; ctx.fillRect(bx, by, bw, bh); ctx.globalCompositeOperation = 'source-over'; }
+            if (it.st === 'none') { ctx.globalCompositeOperation = 'multiply'; ctx.globalAlpha = 0.55; ctx.fillStyle = '#000'; ctx.fillRect(bx, by, bw, bh); ctx.globalAlpha = 1; ctx.globalCompositeOperation = 'source-over'; }
+            ctx.restore();
+          } else {
+            ctx.fillStyle = T.phBg; ctx.fillRect(bx, by, bw, bh);
+          }
+        } else {
+          ctx.fillStyle = it.st === 'must' ? T.mustFill : it.st === 'maybe' ? T.bg : 'transparent'; if (it.st !== 'none') ctx.fillRect(bx, by, bw, bh);
+          ctx.strokeStyle = it.st === 'maybe' ? T.fg : T.line; ctx.lineWidth = it.st === 'maybe' ? 2 : 1.5;
+          if (it.st === 'maybe') { ctx.setLineDash([10, 7]); ctx.strokeRect(bx + 1, by + 1, bw - 2, bh - 2); ctx.setLineDash([]); }
+          else if (it.st === 'none') { ctx.strokeRect(bx + 1, by + 1, bw - 2, bh - 2); }
+        }
+        // Localized gradient for text.
+        const grad = ctx.createLinearGradient(0, by + bh * 0.25, 0, by + bh);
+        grad.addColorStop(0, 'rgba(0,0,0,0)'); grad.addColorStop(hasPh ? 0.35 : 0, hasPh ? 'rgba(0,0,0,.55)' : 'rgba(0,0,0,.55)'); grad.addColorStop(1, 'rgba(0,0,0,.85)');
+        ctx.fillStyle = grad; ctx.fillRect(bx, by, bw, bh);
+        // Status dot.
+        if (it.st !== 'none') {
+          const cx = bx + bw - 11, cy = by + 11, r = 4;
+          ctx.beginPath(); ctx.arc(cx, cy, r, 0, Math.PI * 2);
+          if (it.st === 'must') { ctx.fillStyle = T.acc; ctx.fill(); }
+          else { ctx.lineWidth = 1.8; ctx.strokeStyle = T.fg; ctx.stroke(); }
+        }
+        // Text.
+        (ctx as any).textShadow = '0 1px 4px rgba(0,0,0,.85)';
+        ctx.fillStyle = it.st === 'none' ? T.sub : T.fg; setF(ctx, T, T.nw, 28); const L = wrapW(ctx, cs(T, it.name), bw - 16); let ly = by + bh - 36;
+        for (let li = L.length - 1; li >= 0; li--) {
+          if (ly > by + 10) { fitT(ctx, T, L[li], T.nw, 28, 18, bw - 16); ctx.fillText(L[li], bx + 8, ly); ly -= 27; }
+        }
+        if (ly > by + 10) { mono(ctx, 16); ctx.fillStyle = it.st === 'none' ? T.sub : T.fg; ctx.fillText(it.start, bx + 8, ly + 2); }
+        (ctx as any).textShadow = 'none';
         ctx.restore();
       }, 24);
     });
