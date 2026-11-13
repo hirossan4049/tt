@@ -1,0 +1,11 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  // Static site: Next.js `output: 'export'` → out/, served by Workers static assets.
+  "name": "tt",
+  "compatibility_date": "2026-11-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  },
+  "routes": [{ "pattern": "tt.h1rose.com", "custom_domain": true }]
+}

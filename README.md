@@ -25,7 +25,7 @@ Instagram Story / 壁紙の画像、または Story 用の動画として書き�
 
 ## 技術構成
 
-Next.js 16（App Router, `output: 'export'`）/ React 19 / TypeScript / Tailwind CSS v4 / Zustand 5（persist → LocalStorage）/
+Next.js 16（App Router, `output: 'export'`）/ Cloudflare Workers/ React 19 / TypeScript / Tailwind CSS v4 / Zustand 5（persist → LocalStorage）/
 mediabunny（WebCodecs → MP4）/ Fontsource（Big Shoulders Display, Archivo, IBM Plex Mono, Noto Sans JP をセルフホスト）/ Vitest。
 
 ```
@@ -50,10 +50,22 @@ npm test
 npm run build      # → out/
 ```
 
-## デプロイ（GitHub Pages）
+## デプロイ（Cloudflare Workers 静的アセット）
 
-現在は `gh-pages` ブランチ（ビルド済み `out/`）から配信しています。自動デプロイにするには `deploy/pages.yml` を `.github/workflows/deploy.yml` に移動して push し、Source を **GitHub Actions** に切り替えてください（`main` への push でビルド→公開）。
+`wrangler.jsonc` で `out/` を配信し、`tt.h1rose.com` をカスタムドメインとして割り当てます（`public/_headers` でキャッシュ設定）。
 
-1. Settings → Pages → Source: **Deploy from a branch** / `gh-pages` / root（Actions 移行後は **GitHub Actions**）
-2. DNS に `tt.h1rose.com` → `hirossan4049.github.io` の **CNAME** レコードを追加
-3. Settings → Pages → Custom domain に `tt.h1rose.com`（`public/CNAME` 同梱）、反映後 Enforce HTTPS を有効化
+**初回設定（Workers Builds による Git 連携）**
+
+1. Cloudflare ダッシュボード → Workers & Pages → Create → Import a repository → `hirossan4049/tt`
+2. Build command: `npm run build` / Deploy command: `npx wrangler deploy`（Root directory はそのまま）
+3. 以降は `main` への push で自動デプロイ、他ブランチはプレビュー URL が発行されます
+
+h1rose.com の DNS が Cloudflare にあるため、`tt.h1rose.com` の DNS レコードと証明書は初回デプロイ時に自動作成されます。
+
+**手元から直接デプロイ**
+
+```bash
+npx wrangler login
+npm run deploy     # build → wrangler deploy
+npm run preview    # build → wrangler dev（ローカル確認）
+```
