@@ -13,6 +13,7 @@ import '@fontsource/noto-sans-jp/400';
 import '@fontsource/noto-sans-jp/500';
 import '@fontsource/noto-sans-jp/700';
 import './globals.css';
+import { IMG_MANIFEST } from '@/lib/img-manifest';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://tt.h1rose.com'),
@@ -26,6 +27,11 @@ export const viewport: Viewport = { width: 'device-width', initialScale: 1, view
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="ja">
+      <head>
+        {Object.values(IMG_MANIFEST).map((m) => (
+          <link key={m.md} rel="prefetch" as="image" type="image/webp" href={m.md} />
+        ))}
+      </head>
       <body>{children}</body>
     </html>
   );

@@ -2,6 +2,7 @@
 import { create } from 'zustand';
 import { persist, createJSONStorage } from 'zustand/middleware';
 import { IMG, SEED, type DayId, type Status } from './data';
+import { IMG_MANIFEST } from './img-manifest';
 import type { Sel } from './plan';
 
 export type View = 'tt' | 'my' | 'ex';
@@ -93,11 +94,19 @@ export const usePhotos = create<PhotoState>()(
   ),
 );
 
+const IMG_EXTS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif', '.avif', '.bmp', '.tiff']);
+function isImageUrl(url: string) {
+  const u = url.split('?')[0].toLowerCase();
+  return IMG_EXTS.has(u.slice(u.lastIndexOf('.')));
+}
+
 export function photoOf(name: string, st: Pick<PhotoState, 'user'>): Photo | null {
   const u = st.user[name];
   if (u) return { ui: u, hi: u, credit: '', license: '', own: true };
+  const m = IMG_MANIFEST[name];
+  if (m) return { ui: m.md, hi: m.lg, credit: 'Tomorrowland', license: '', own: false };
   const url = IMG[name];
-  if (url) return { ui: url, hi: url, credit: 'Tomorrowland', license: '', own: false };
+  if (url && isImageUrl(url)) return { ui: url, hi: url, credit: 'Tomorrowland', license: '', own: false };
   return null;
 }
 
