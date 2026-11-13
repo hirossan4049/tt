@@ -25,7 +25,7 @@ Instagram Story / 壁紙の画像、または Story 用の動画として書き�
 
 ## 技術構成
 
-Next.js 16（App Router, `output: 'export'`）/ Cloudflare Workers/ React 19 / TypeScript / Tailwind CSS v4 / Zustand 5（persist → LocalStorage）/
+Next.js 16（App Router, `output: 'export'`）/ Cloudflare Workers / React 19 / TypeScript / Tailwind CSS v4 / Zustand 5（persist → LocalStorage）/
 mediabunny（WebCodecs → MP4）/ Fontsource（Big Shoulders Display, Archivo, IBM Plex Mono, Noto Sans JP をセルフホスト）/ Vitest。
 
 ```
