@@ -1,9 +1,9 @@
 'use client';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { BY, DAYS, DY, GLY, PERFS, fm } from '@/lib/data';
+import { BY, DAYS, DY, PERFS, fm } from '@/lib/data';
 import { decodeShare } from '@/lib/plan';
 import { flash, usePhotos, usePlanner, type View } from '@/lib/store';
-import { FG, SUB, bgUrl, cx, usePhotoOf } from './ui';
+import { FG, Marker, SUB, bgUrl, cx, usePhotoOf } from './ui';
 import { Grid } from './Grid';
 import { MyPlan } from './MyPlan';
 import { ExportStudio } from './ExportStudio';
@@ -171,7 +171,10 @@ function Search({ wide }: { wide: boolean }) {
           <span className="block size-12 bg-[#1c1c1b] bg-cover bg-[center_22%]" style={{ backgroundImage: bgUrl(phOf(p.name)) }} />
           <span className="font-mono text-[11px] font-semibold text-sub">{DY[p.day].dow}</span>
           <span className="font-disp text-[20px] leading-none font-extrabold uppercase">{p.name}</span>
-          <span className="font-mono text-[11px] font-medium whitespace-nowrap text-sub">{GLY[sel[p.id] || 'none']} {fm(p.start)}</span>
+          <span className="flex items-center gap-1.5 font-mono text-[11px] font-medium whitespace-nowrap text-sub">
+            <Marker status={sel[p.id] || 'none'} size={6} />
+            {fm(p.start)}
+          </span>
         </button>
       ))}
       {q && !results.length && <div className="p-3.5 font-mono text-[12px] text-sub">—</div>}

@@ -1,9 +1,9 @@
 'use client';
 import { memo, useEffect, useRef } from 'react';
-import { BY, GLY, GRID_H, NEXT, PERFS, PX, S0, ST, STAGES, fm, type Perf, type Status } from '@/lib/data';
+import { BY, GRID_H, NEXT, PERFS, PX, S0, ST, STAGES, fm, type Perf, type Status } from '@/lib/data';
 import { conflicts, type Sel } from '@/lib/plan';
 import { usePlanner, type Photo } from '@/lib/store';
-import { FG, INK, RED, bgUrl, usePhotoOf } from './ui';
+import { FG, Marker, MUST_TINT, RED, bgUrl, usePhotoOf } from './ui';
 
 const HOUR_LINES = `repeating-linear-gradient(to bottom, rgba(240,239,234,.06) 0 1px, transparent 1px ${30 * PX}px, rgba(240,239,234,.02) ${30 * PX}px ${30 * PX + 1}px, transparent ${30 * PX + 1}px ${60 * PX}px)`;
 const HOURS = Array.from({ length: 13 }, (_, i) => 13 + i);
@@ -129,20 +129,15 @@ const Block = memo(function Block({ p, v, sel, ph, dim, pressed }: { p: Perf; v:
           <span className="absolute inset-x-0 bottom-0 z-[1]" style={{ height: short ? '100%' : '78%', background: 'linear-gradient(to top, rgba(0,0,0,.84) 0%, rgba(0,0,0,.5) 35%, rgba(0,0,0,.15) 65%, transparent 100%)' }} />
         </>
       ) : (
-        <span className="absolute inset-0 z-[1]" style={{ background: isMust ? FG : isMaybe ? 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 1px, transparent 1px 6px), #121211' : '#171716' }} />
+        <span className="absolute inset-0 z-[1]" style={{ background: isMust ? MUST_TINT : isMaybe ? 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 1px, transparent 1px 6px), #121211' : '#171716' }} />
       )}
 
-      {(isMust || isMaybe) && (
-        <span className={`absolute top-1.5 right-1.5 z-[3] size-[7px] rounded-full ${isMust ? 'bg-sig' : 'border border-bone/80'}`} />
-      )}
+      <span className="absolute top-1.5 right-1.5 z-[3]"><Marker status={v} size={7} /></span>
 
-      <span className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-[2px] px-1.5 pt-3 pb-1.5" style={{ color: hasPh ? '#f0efea' : isMust ? INK : FG }}>
+      <span className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-[2px] px-1.5 pt-3 pb-1.5" style={{ color: FG }}>
         <span className="font-disp text-[15px] leading-[.92] font-extrabold tracking-[.01em] uppercase [text-shadow:0_1px_3px_rgba(0,0,0,.85)]">{p.name}</span>
         {!short && (
-          <span className="flex items-center justify-between font-mono text-[10px] leading-none font-medium [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
-            <span className={hasPh ? 'opacity-90' : 'opacity-65'}>{fm(p.start)}</span>
-            <span className="text-[11px]">{GLY[v]}</span>
-          </span>
+          <span className="font-mono text-[10px] leading-none font-medium [text-shadow:0_1px_2px_rgba(0,0,0,.8)]" style={{ opacity: hasPh ? 0.9 : 0.65 }}>{fm(p.start)}</span>
         )}
       </span>
       {bar && <span className="absolute right-0 z-[3] w-1" style={{ top: bar.top, height: bar.h, background: bar.bg }} />}
@@ -173,11 +168,11 @@ function Dock({ id }: { id: string }) {
               onClick={() => setStatus(p.id, k)}
               role="radio"
               aria-checked={on}
-              aria-label={k}
-              className="flex size-9 flex-col items-center justify-center rounded-full border-0 transition-colors"
-              style={{ background: on ? (k === 'must' ? '#ff4a2e' : k === 'maybe' ? 'rgba(240,239,234,.14)' : 'transparent') : 'transparent', color: on && k === 'must' ? INK : FG }}
+              aria-label={k === 'none' ? '未選択' : k}
+              className="flex size-9 flex-none items-center justify-center rounded-full border-0 transition-colors"
+              style={{ background: on ? 'rgba(240,239,234,.14)' : 'transparent' }}
             >
-              <span className="font-mono text-[14px] leading-none font-medium">{k === 'none' ? '×' : GLY[k]}</span>
+              {k === 'none' ? <span className="font-mono text-[15px] leading-none text-bone/70">×</span> : <Marker status={k} size={k === 'must' ? 11 : 10} />}
             </button>
           );
         })}

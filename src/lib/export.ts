@@ -1,6 +1,6 @@
-import { DY, PERFS, ST, fm } from './data';
+import { DAYS, DY, PERFS, ST, fm } from './data';
 import type { Sel } from './plan';
-import { buildPages, dims, drawOutro, drawPage, pageDuration, type Item } from './render';
+import { FONT_LOADS, THEMES, dims, drawOutro, drawPage, pageDuration, type Item } from './render';
 import type { ExportOpts, Photo } from './store';
 
 // ---------- image cache (CORS-enabled so the canvas stays exportable) ----------
@@ -45,25 +45,32 @@ export function preload(urls: string[], timeout = 8000): Promise<void> {
 
 export function exportItems(ex: ExportOpts, sel: Sel, phOf: (name: string) => Photo | null): Item[] {
   return PERFS.filter((p) => p.day === ex.day)
-    .map((p) => ({ name: p.name, start: fm(p.start), end: fm(p.end), s: p.start, e: p.end, stage: ST[p.stage].name, stageId: p.stage, st: sel[p.id] || 'none', ph: phOf(p.name) }) as Item)
+    .map((p) => ({ name: p.name, start: fm(p.start), end: fm(p.end), s: p.start, e: p.end, stage: ST[p.stage].name, stageShort: ST[p.stage].short, stageId: p.stage, st: sel[p.id] || 'none', ph: phOf(p.name) }) as Item)
     .filter((i) => ex.content === 'all' || i.st === 'must' || (ex.content === 'mm' && i.st === 'maybe'))
     .sort((a, b) => a.s - b.s || a.stageId.localeCompare(b.stageId));
 }
 
 export const fileBase = (ex: ExportOpts) => `tt-${DY[ex.day].dow.toLowerCase()}-${ex.layout}-${ex.theme}`;
 
-// ---------- still images ----------
-export async function renderPngs(ex: ExportOpts, items: Item[]): Promise<File[]> {
-  const D = dims(ex), pages = buildPages(ex, items), day = DY[ex.day];
+// ---------- still image (always exactly one file per day) ----------
+export async function renderPng(ex: ExportOpts, items: Item[]): Promise<File> {
+  await Promise.all(FONT_LOADS.map((font) => document.fonts.load(font, items.map((it) => it.name).join(' ') || ' ')));
+  const D = dims(ex), day = DY[ex.day];
   if (ex.photo) await preload(items.map((i) => i.ph?.hi || ''));
+  const c = document.createElement('canvas'); c.width = D.pw; c.height = D.ph;
+  const x = c.getContext('2d')!; x.setTransform(D.f, 0, 0, D.f, 0, 0);
+  drawPage(x, ex, items, day, getImg);
+  const b = await new Promise<Blob | null>((r) => c.toBlob(r, 'image/png'));
+  if (!b) throw new Error('toBlob failed');
+  return new File([b], `${fileBase(ex)}.png`, { type: 'image/png' });
+}
+
+/** Renders all three festival days in one go, each still exactly one image. */
+export async function renderAllDaysPng(ex: ExportOpts, sel: Sel, phOf: (name: string) => Photo | null): Promise<File[]> {
   const files: File[] = [];
-  for (let i = 0; i < pages.length; i++) {
-    const c = document.createElement('canvas'); c.width = D.pw; c.height = D.ph;
-    const x = c.getContext('2d')!; x.setTransform(D.f, 0, 0, D.f, 0, 0);
-    drawPage(x, ex, pages[i], i, pages.length, day, items, getImg);
-    const b = await new Promise<Blob | null>((r) => c.toBlob(r, 'image/png'));
-    if (!b) throw new Error('toBlob failed');
-    files.push(new File([b], `${fileBase(ex)}${pages.length > 1 ? '-' + (i + 1) : ''}.png`, { type: 'image/png' }));
+  for (const d of DAYS) {
+    const exD: ExportOpts = { ...ex, day: d.id };
+    files.push(await renderPng(exD, exportItems(exD, sel, phOf)));
   }
   return files;
 }
@@ -71,28 +78,21 @@ export async function renderPngs(ex: ExportOpts, items: Item[]): Promise<File[]>
 // ---------- Story video ----------
 const FPS = 30, FADE = 0.3, OUTRO = 2.2;
 export function videoTimeline(ex: ExportOpts, items: Item[]) {
-  const pages = buildPages(ex, items);
-  const segs = pages.map((p) => pageDuration(p.length));
-  return { pages, segs, total: segs.reduce((a, b) => a + b, 0) + OUTRO };
+  const dur = pageDuration(items.length);
+  return { dur, total: dur + OUTRO };
 }
 /** Draws frame at time t (seconds) of the story video. */
 export function drawVideoFrame(ctx: CanvasRenderingContext2D, ex: ExportOpts, items: Item[], tl: ReturnType<typeof videoTimeline>, t: number) {
   const day = DY[ex.day], D = dims(ex);
-  let acc = 0;
-  for (let i = 0; i < tl.pages.length; i++) {
-    const d = tl.segs[i];
-    if (t < acc + d) {
-      const lt = t - acc;
-      drawPage(ctx, ex, tl.pages[i], i, tl.pages.length, day, items, getImg, { t: lt, dur: d });
-      const out = lt - (d - FADE);
-      if (out > 0) { ctx.save(); ctx.globalAlpha = Math.min(1, out / FADE); ctx.fillStyle = getComputedBg(ex); ctx.fillRect(0, 0, 1080, D.H); ctx.restore(); }
-      return;
-    }
-    acc += d;
+  if (t < tl.dur) {
+    drawPage(ctx, ex, items, day, getImg, { t, dur: tl.dur });
+    const out = t - (tl.dur - FADE);
+    if (out > 0) { ctx.save(); ctx.globalAlpha = Math.min(1, out / FADE); ctx.fillStyle = getComputedBg(ex); ctx.fillRect(0, 0, 1080, D.H); ctx.restore(); }
+    return;
   }
-  drawOutro(ctx, ex, day, t - acc);
+  drawOutro(ctx, ex, day, t - tl.dur);
 }
-const getComputedBg = (ex: ExportOpts) => ({ ink: '#0c0c0b', paper: '#ebe8e0', riso: '#f1ebdd' })[ex.theme];
+const getComputedBg = (ex: ExportOpts) => THEMES[ex.theme].bg;
 
 export type VideoResult = { file: File; kind: 'mp4' | 'webm' };
 
@@ -101,6 +101,7 @@ export type VideoResult = { file: File; kind: 'mp4' | 'webm' };
  * faster than real time and Instagram-friendly — and falls back to MediaRecorder (real time) otherwise.
  */
 export async function renderVideo(ex: ExportOpts, items: Item[], onProgress: (p: number) => void, signal?: AbortSignal): Promise<VideoResult> {
+  await Promise.all(FONT_LOADS.map((font) => document.fonts.load(font, items.map((it) => it.name).join(' ') || ' ')));
   const exS: ExportOpts = { ...ex, format: 'story' };
   if (exS.photo) await preload(items.map((i) => i.ph?.hi || ''));
   const tl = videoTimeline(exS, items);

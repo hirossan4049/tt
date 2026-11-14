@@ -327,7 +327,6 @@ export const BY: Record<string, Perf> = Object.fromEntries(PERFS.map((p) => [p.i
 export const ST = Object.fromEntries(STAGES.map((s) => [s.id, s])) as Record<StageId, Stage>;
 export const DY = Object.fromEntries(DAYS.map((d) => [d.id, d])) as Record<DayId, Day>;
 
-export const GLY: Record<Status, string> = { must: '●', maybe: '○', none: '' };
 export const NEXT: Record<Status, Status> = { none: 'must', must: 'maybe', maybe: 'none' };
 
 export const SEED: Record<string, Exclude<Status, 'none'>> = {

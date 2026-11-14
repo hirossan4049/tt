@@ -589,5 +589,35 @@ export const IMG_MANIFEST: Record<string, { sm: string; md: string; lg: string }
     "sm": "/artists/663c7f01afc6bec4_sm.webp",
     "md": "/artists/663c7f01afc6bec4_md.webp",
     "lg": "/artists/663c7f01afc6bec4_lg.webp"
+  },
+  "Alan Walker": {
+    "sm": "/artists/a0220b886c2dfb88_sm.webp",
+    "md": "/artists/a0220b886c2dfb88_md.webp",
+    "lg": "/artists/a0220b886c2dfb88_lg.webp"
+  },
+  "Yellow Claw": {
+    "sm": "/artists/b11876c580e18003_sm.webp",
+    "md": "/artists/b11876c580e18003_md.webp",
+    "lg": "/artists/b11876c580e18003_lg.webp"
+  },
+  "DaDoo": {
+    "sm": "/artists/6193d35f5d7ce81f_sm.webp",
+    "md": "/artists/6193d35f5d7ce81f_md.webp",
+    "lg": "/artists/6193d35f5d7ce81f_lg.webp"
+  },
+  "Aly & Fila": {
+    "sm": "/artists/57ed798ce935a8bf_sm.webp",
+    "md": "/artists/57ed798ce935a8bf_md.webp",
+    "lg": "/artists/57ed798ce935a8bf_lg.webp"
+  },
+  "Flosstradamus b2b Yellow Claw": {
+    "sm": "/artists/2ef9827b24a0beee_sm.webp",
+    "md": "/artists/2ef9827b24a0beee_md.webp",
+    "lg": "/artists/2ef9827b24a0beee_lg.webp"
+  },
+  "Raiden": {
+    "sm": "/artists/1bb6e9927b69f1ea_sm.webp",
+    "md": "/artists/1bb6e9927b69f1ea_md.webp",
+    "lg": "/artists/1bb6e9927b69f1ea_lg.webp"
   }
 };

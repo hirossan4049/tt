@@ -6,13 +6,13 @@ import { IMG_MANIFEST } from './img-manifest';
 import type { Sel } from './plan';
 
 export type View = 'tt' | 'my' | 'ex';
-export type Layout = 'poster' | 'timeline' | 'grid';
+export type Layout = 'poster' | 'timeline' | 'grid' | 'schedule';
 export type ThemeId = 'ink' | 'paper' | 'riso';
 export type Content = 'must' | 'mm' | 'all';
 export type Format = 'story' | 'wallpaper';
 export type Media = 'image' | 'video';
 
-export interface ExportOpts { format: Format; device: string; layout: Layout; content: Content; photo: boolean; day: DayId; theme: ThemeId; media: Media }
+export interface ExportOpts { format: Format; device: string; layout: Layout; content: Content; photo: boolean; day: DayId; theme: ThemeId; media: Media; reverse: boolean }
 
 export interface Photo { ui: string; hi: string; credit: string; license: string; own?: boolean }
 
@@ -29,7 +29,6 @@ interface PlannerState {
   pulse: string | null;
   query: string;
   search: boolean;
-  page: number;
   toast: string | null;
   /** perf id the grid should scroll to */
   jump: string | null;
@@ -38,7 +37,7 @@ interface PlannerState {
   setEx: <K extends keyof ExportOpts>(k: K, v: ExportOpts[K]) => void;
 }
 
-export const DEFAULT_EX: ExportOpts = { format: 'story', device: 'and', layout: 'poster', content: 'mm', photo: true, day: 'd1', theme: 'ink', media: 'image' };
+export const DEFAULT_EX: ExportOpts = { format: 'story', device: 'and', layout: 'poster', content: 'mm', photo: true, day: 'd1', theme: 'ink', media: 'image', reverse: false };
 
 export const usePlanner = create<PlannerState>()(
   persist(
@@ -53,7 +52,6 @@ export const usePlanner = create<PlannerState>()(
       pulse: null,
       query: '',
       search: false,
-      page: 0,
       toast: null,
       jump: null,
       set: (p) => set(p),
@@ -64,7 +62,7 @@ export const usePlanner = create<PlannerState>()(
           else sel[id] = st;
           return { sel, focus: id, pulse: id };
         }),
-      setEx: (k, v) => set((s) => ({ ex: { ...s.ex, [k]: v }, page: 0 })),
+      setEx: (k, v) => set((s) => ({ ex: { ...s.ex, [k]: v } })),
     }),
     {
       name: 'tt.planner.v1',

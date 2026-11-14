@@ -2,8 +2,8 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { DAYS, DEVICES, DY, SITE } from '@/lib/data';
 import { encodeShare } from '@/lib/plan';
-import { deliver, drawVideoFrame, exportItems, getImg, onImageLoad, renderPngs, renderVideo, videoTimeline } from '@/lib/export';
-import { FONT_LOADS, THEMES, buildPages, dims, drawPage } from '@/lib/render';
+import { deliver, drawVideoFrame, exportItems, getImg, onImageLoad, renderAllDaysPng, renderPng, renderVideo, videoTimeline } from '@/lib/export';
+import { FONT_LOADS, THEMES, dims, drawPage } from '@/lib/render';
 import { flash, usePlanner, type ExportOpts } from '@/lib/store';
 import { FG, INK, usePhotoOf } from './ui';
 
@@ -12,8 +12,6 @@ type Opt = [string | boolean, string, string?];
 export function ExportStudio({ wide }: { wide: boolean }) {
   const ex = usePlanner((s) => s.ex);
   const sel = usePlanner((s) => s.sel);
-  const page = usePlanner((s) => s.page);
-  const set = usePlanner((s) => s.set);
   const setEx = usePlanner((s) => s.setEx);
   const phOf = usePhotoOf();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -24,10 +22,7 @@ export function ExportStudio({ wide }: { wide: boolean }) {
   const video = ex.media === 'video';
   const eff: ExportOpts = useMemo(() => (video ? { ...ex, format: 'story' } : ex), [ex, video]);
   const items = useMemo(() => exportItems(eff, sel, phOf), [eff, sel, phOf]);
-  const pages = useMemo(() => buildPages(eff, items), [eff, items]);
   const tl = useMemo(() => videoTimeline(eff, items), [eff, items]);
-  const pn = pages.length;
-  const pi = Math.min(page, pn - 1);
   const D = dims(eff);
 
   useEffect(() => {
@@ -50,7 +45,7 @@ export function ExportStudio({ wide }: { wide: boolean }) {
     cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
     const ctx = cv.getContext('2d')!;
     ctx.setTransform(s * dpr, 0, 0, s * dpr, 0, 0);
-    if (!video) { drawPage(ctx, eff, pages[pi], pi, pn, DY[eff.day], items, getImg); return; }
+    if (!video) { drawPage(ctx, eff, items, DY[eff.day], getImg); return; }
     let raf = 0;
     const t0 = performance.now();
     const loop = () => {
@@ -61,24 +56,32 @@ export function ExportStudio({ wide }: { wide: boolean }) {
     };
     loop();
     return () => cancelAnimationFrame(raf);
-  }, [eff, items, pages, pi, pn, tl, video, wide, D.H, tick]);
+  }, [eff, items, tl, video, wide, D.H, tick]);
 
   const seg = <K extends keyof ExportOpts>(key: K, opts: Opt[]) =>
     opts.map(([k, l, sw]) => {
       const on = ex[key] === k;
       return { label: l, on, sw, onClick: () => setEx(key, k as ExportOpts[K]) };
     });
+  // Ordered by how much each choice actually reshapes the image — layout and theme first, plumbing last.
+  // Whichever layout is picked, it always renders as exactly one image per day: Poster adapts its
+  // density automatically to the selection count; List/Grid/マイプラン shrink to fit instead.
+  const isSchedule = ex.layout === 'schedule';
+  const isGrid = ex.layout === 'grid';
   const rows = [
-    { label: '出力', opts: seg('media', [['image', '画像'], ['video', '動画']]) },
-    { label: 'レイアウト', opts: seg('layout', [['poster', 'Poster'], ['timeline', 'Timeline'], ['grid', 'Grid']]) },
+    { label: 'レイアウト', opts: seg('layout', [['poster', 'Poster'], ['timeline', 'List'], ['grid', 'Grid'], ['schedule', 'マイプラン']]) },
+    // Grid is the real per-stage timetable; only there does a time direction mean anything.
+    ...(isGrid ? [{ label: '並び順', opts: seg('reverse', [[false, '早い順'], [true, '遅い順']]) }] : []),
     { label: 'テーマ', opts: seg('theme', Object.entries(THEMES).map(([k, t]) => [k, t.label, t.sw] as Opt)) },
-    { label: '内容', opts: seg('content', [['must', '● のみ'], ['mm', '● + ○'], ['all', '全枠']]) },
     { label: '日', opts: seg('day', DAYS.map((d) => [d.id, d.dow] as Opt)) },
+    // マイプランは常に自分の選択（Must+Maybe）だけを表示するため、内容フィルターは意味を持たない。
+    ...(isSchedule ? [] : [{ label: '内容', opts: seg('content', [['must', 'Mustのみ'], ['mm', 'Must+Maybe'], ['all', '全枠']]) }]),
     { label: '写真', opts: seg('photo', [[true, 'あり'], [false, 'なし']]) },
+    { label: '出力', opts: seg('media', [['image', '画像'], ['video', '動画']]) },
     ...(video ? [] : [{ label: 'サイズ', opts: seg('format', [['story', 'Story'], ['wallpaper', '壁紙']]) }]),
   ];
 
-  const meta = video ? `${D.pw}×${D.ph} · MP4 · ${Math.round(tl.total)}s` : `${D.pw}×${D.ph}${pn > 1 ? ` · ${pi + 1}/${pn}` : ''}`;
+  const meta = video ? `${D.pw}×${D.ph} · MP4 · ${Math.round(tl.total)}s` : `${D.pw}×${D.ph}`;
 
   const save = async () => {
     if (busy != null) { abortRef.current?.abort(); return; }
@@ -92,9 +95,9 @@ export function ExportStudio({ wide }: { wide: boolean }) {
         if (how !== 'cancelled') flash(how === 'shared' ? '共有しました' : `${r.kind.toUpperCase()} を保存`);
       } else {
         setBusy(0);
-        const files = await renderPngs(eff, items);
+        const file = await renderPng(eff, items);
         setBusy(null);
-        const how = await deliver(files);
+        const how = await deliver([file]);
         if (how !== 'cancelled') flash(how === 'shared' ? '共有しました' : `${D.pw}×${D.ph} を保存`);
       }
     } catch (e) {
@@ -104,18 +107,28 @@ export function ExportStudio({ wide }: { wide: boolean }) {
     }
   };
 
+  const saveAll = async () => {
+    if (busy != null) return;
+    try {
+      setBusy(0);
+      const files = await renderAllDaysPng(eff, sel, phOf);
+      setBusy(null);
+      const how = await deliver(files);
+      if (how !== 'cancelled') flash(how === 'shared' ? '共有しました' : '3日分を保存');
+    } catch {
+      setBusy(null);
+      flash('画像を書き出せませんでした');
+    }
+  };
+
   const saveLabel =
-    busy != null ? (video ? `書き出し中 ${Math.round(busy * 100)}% — 中止` : '書き出し中…') : video ? 'MP4を保存' : pn > 1 ? `PNG ${pn}枚を保存` : 'PNGを保存';
+    busy != null ? (video ? `書き出し中 ${Math.round(busy * 100)}% — 中止` : '書き出し中…') : video ? 'MP4を保存' : 'PNGを保存';
 
   return (
     <div className="min-h-0 flex-1 overflow-auto">
       <div className="flex flex-col items-center gap-2.5 px-3 pt-[18px] pb-3">
         <canvas ref={canvasRef} aria-label="書き出しプレビュー" className="block shadow-[0_20px_60px_rgba(0,0,0,.8)]" />
-        <div className="flex h-[30px] items-center gap-2.5">
-          {!video && pn > 1 && <PageBtn label="前のページ" onClick={() => set({ page: (pi - 1 + pn) % pn })}>‹</PageBtn>}
-          <span className="font-mono text-[11px] font-medium whitespace-nowrap text-sub">{meta}</span>
-          {!video && pn > 1 && <PageBtn label="次のページ" onClick={() => set({ page: (pi + 1) % pn })}>›</PageBtn>}
-        </div>
+        <span className="font-mono text-[11px] font-medium whitespace-nowrap text-sub">{meta}</span>
       </div>
       <div className="flex flex-col px-3 pt-0.5 pb-[18px]">
         {rows.map((row) => (
@@ -161,16 +174,13 @@ export function ExportStudio({ wide }: { wide: boolean }) {
             リンク
           </button>
         </div>
+        {!video && (
+          <button onClick={saveAll} disabled={busy != null} className="mt-2 h-[42px] rounded-full border border-bone/15 bg-transparent text-[12px] font-semibold text-bone/70 disabled:opacity-40">
+            3日分まとめて保存
+          </button>
+        )}
         <p className="mt-3 text-center font-mono text-[10px] leading-relaxed text-bone/35">Made with {SITE}</p>
       </div>
     </div>
-  );
-}
-
-function PageBtn({ label, onClick, children }: { label: string; onClick: () => void; children: React.ReactNode }) {
-  return (
-    <button onClick={onClick} aria-label={label} className="size-[30px] rounded-full border border-bone/25 bg-transparent font-mono text-[13px] font-medium">
-      {children}
-    </button>
   );
 }

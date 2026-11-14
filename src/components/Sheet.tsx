@@ -1,10 +1,10 @@
 'use client';
 import { useRef, useState } from 'react';
-import { BY, DY, GLY, ST, fm, type Status } from '@/lib/data';
+import { BY, DY, ST, fm, type Status } from '@/lib/data';
 import { conflicts } from '@/lib/plan';
 import { fileToDataUrl } from '@/lib/photos';
 import { flash, usePhotos, usePlanner } from '@/lib/store';
-import { FG, RED, SUB, bgUrl, usePhotoOf } from './ui';
+import { FG, Marker, RED, bgUrl, usePhotoOf } from './ui';
 
 export function Sheet({ id }: { id: string }) {
   const p = BY[id];
@@ -72,7 +72,7 @@ export function Sheet({ id }: { id: string }) {
         </div>
 
         <div className="flex flex-col gap-0">
-          <div role="radiogroup" aria-label="ステータス" className="flex items-center justify-center gap-3 border-b border-bone/8 px-4 py-3">
+          <div role="radiogroup" aria-label="ステータス" className="flex items-center justify-center gap-5 border-b border-bone/8 px-4 py-3.5">
             {(['must', 'maybe', 'none'] as Status[]).map((k) => {
               const on = cur === k;
               return (
@@ -82,11 +82,10 @@ export function Sheet({ id }: { id: string }) {
                   role="radio"
                   aria-checked={on}
                   aria-label={k === 'none' ? 'なし' : k}
-                  className="flex items-center gap-2 rounded-full border border-bone/15 px-4 py-2.5 text-[13px] font-semibold transition-colors active:scale-[.97]"
-                  style={{ background: on ? (k === 'must' ? FG : k === 'maybe' ? 'rgba(240,239,234,.10)' : 'transparent') : 'transparent', color: on && k === 'must' ? '#0c0c0b' : '#f0efea' }}
+                  className="flex size-14 flex-none items-center justify-center rounded-full border-0 transition-transform active:scale-90"
+                  style={{ background: on ? 'rgba(240,239,234,.12)' : 'transparent' }}
                 >
-                  <span className="font-mono text-[15px] leading-none font-medium">{k === 'none' ? '×' : GLY[k]}</span>
-                  {k !== 'none' && <span className="font-disp text-[15px] leading-none font-extrabold tracking-[.04em] uppercase">{k}</span>}
+                  {k === 'none' ? <span className="font-mono text-[18px] leading-none text-bone/70">×</span> : <Marker status={k} size={k === 'must' ? 16 : 14} />}
                 </button>
               );
             })}
@@ -99,7 +98,10 @@ export function Sheet({ id }: { id: string }) {
                 {conf.map((c) => (
                   <button key={c.q.id} onClick={() => set({ sheet: c.q.id })} className="flex items-baseline justify-between gap-3 border-0 bg-transparent p-0 text-left">
                     <span className="min-w-0 truncate font-disp text-[16px] leading-none font-extrabold uppercase" style={{ color: c.strong ? RED : FG }}>{c.q.name}</span>
-                    <span className="flex-none font-mono text-[10px] font-medium whitespace-nowrap text-sub">{GLY[sel[c.q.id] || 'none']} {fm(c.q.start)}–{fm(c.q.end)}</span>
+                    <span className="flex flex-none items-center gap-1.5 font-mono text-[10px] font-medium whitespace-nowrap text-sub">
+                      <Marker status={sel[c.q.id] || 'none'} size={6} />
+                      {fm(c.q.start)}–{fm(c.q.end)}
+                    </span>
                   </button>
                 ))}
               </div>

@@ -1,9 +1,9 @@
 'use client';
 import { useMemo } from 'react';
-import { DY, GLY, K, ST, dur, fm } from '@/lib/data';
+import { DY, K, ST, dur, fm } from '@/lib/data';
 import { buildPlan } from '@/lib/plan';
 import { usePlanner } from '@/lib/store';
-import { FG, INK, RED, bgUrl, usePhotoOf } from './ui';
+import { FG, Marker, MUST_TINT, RED, bgUrl, usePhotoOf } from './ui';
 
 export function MyPlan() {
   const sel = usePlanner((s) => s.sel);
@@ -86,13 +86,12 @@ export function MyPlan() {
                             <span className="absolute inset-x-0 bottom-0 z-[1] h-[78%] bg-gradient-to-t from-black/84 via-black/45 to-transparent" />
                           </>
                         )}
-                        {!hasPh && <span className="absolute inset-0 z-[1]" style={{ background: must ? FG : maybe ? 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 1px, transparent 1px 6px), #121211' : '#171716' }} />}
-                        {must && <span className="absolute top-1.5 right-1.5 z-[3] size-[6px] rounded-full bg-sig" />}
-                        {maybe && <span className="absolute top-1.5 right-1.5 z-[3] size-[6px] rounded-full border border-bone/80" />}
-                        <span className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-[2px] px-2 pb-1.5 pt-3" style={{ color: hasPh ? '#f0efea' : must ? INK : '#f0efea' }}>
+                        {!hasPh && <span className="absolute inset-0 z-[1]" style={{ background: must ? MUST_TINT : maybe ? 'repeating-linear-gradient(135deg, rgba(240,239,234,.13) 0 1px, transparent 1px 6px), #121211' : '#171716' }} />}
+                        <span className="absolute top-1.5 right-1.5 z-[3]"><Marker status={v || 'none'} size={6} /></span>
+                        <span className="absolute inset-x-0 bottom-0 z-[2] flex flex-col gap-[2px] px-2 pb-1.5 pt-3" style={{ color: FG }}>
                           <span className="font-disp leading-[.94] font-extrabold tracking-[.01em] uppercase [text-shadow:0_1px_3px_rgba(0,0,0,.85)]" style={{ fontSize: n === 1 ? 22 : n === 2 ? 16 : 14 }}>{p.name}</span>
                           <span className="font-mono text-[10px] leading-[1.3] font-medium [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">
-                            {GLY[v]} {fm(p.start)}–{fm(p.end)}
+                            {fm(p.start)}–{fm(p.end)}
                           </span>
                           {n === 1 && <span className="font-mono text-[10px] leading-none font-medium tracking-[.08em] text-bone/70 [text-shadow:0_1px_2px_rgba(0,0,0,.8)]">{ST[p.stage].name}</span>}
                         </span>
